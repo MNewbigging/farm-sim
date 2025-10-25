@@ -1,8 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
-import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
+import { AssetManager } from "./asset-manager";
 import { AnimatedObject } from "./animated-object";
+import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 
 export class GameState {
   private renderPipeline: RenderPipeline;
@@ -31,12 +32,7 @@ export class GameState {
     this.animatedObject.playAnimation("idle");
     this.scene.add(this.animatedObject);
 
-    const tile = new THREE.Mesh(
-      new THREE.PlaneGeometry(),
-      new THREE.MeshBasicMaterial({
-        map: assetManager.textures.get(TextureAsset.GrassDiffuse),
-      })
-    ).rotateX(-Math.PI / 2);
+    const tile = new GrassWithLeavesTile(0, 0, assetManager);
     this.scene.add(tile);
 
     // Start game
