@@ -1,11 +1,12 @@
 export interface EventMap {
   "game-loaded": null;
   "game-started": null;
+  "toggle-build-menu": null;
 }
 
 type EventCallback = (event: any) => void;
 
-class EventListener {
+class EventUpdater {
   private callbacks = new Map<keyof EventMap, Set<EventCallback>>();
 
   on<E extends keyof EventMap>(
@@ -39,4 +40,4 @@ class EventListener {
   }
 }
 
-export const eventListener = new EventListener();
+export const eventUpdater = new EventUpdater();

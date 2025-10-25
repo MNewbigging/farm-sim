@@ -1,0 +1,15 @@
+$height: 100px;
+
+.build-menu {
+  position: absolute;
+  background: #2a7b9b;
+  border: 2px solid white;
+
+  &.show {
+    bottom: 60px;
+  }
+
+  &.hide {
+    bottom: calc(-2 * $height);
+  }
+}

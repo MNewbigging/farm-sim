@@ -1,10 +1,12 @@
 import { GameState } from "../game/game-state";
 import { AssetManager } from "../game/asset-manager";
-import { eventListener } from "../events/event-listener";
+import { eventUpdater } from "../events/event-updater";
 
 class AppState {
   loaded = false;
   started = false;
+
+  showBuildMenu = false;
 
   gameState?: GameState;
 
@@ -18,7 +20,11 @@ class AppState {
   startGame = () => {
     this.gameState = new GameState(this.assetManager);
     this.started = true;
-    eventListener.fire("game-started", null);
+    eventUpdater.fire("game-started", null);
+  };
+
+  toggleBuildMenu = () => {
+    this.showBuildMenu = !this.showBuildMenu;
   };
 
   private async loadGame() {
@@ -27,7 +33,7 @@ class AppState {
 
   private onLoad = () => {
     this.loaded = true;
-    eventListener.fire("game-loaded", null);
+    eventUpdater.fire("game-loaded", null);
   };
 }
 
