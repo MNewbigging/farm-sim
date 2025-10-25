@@ -32,6 +32,10 @@
       align-items: center;
       padding: 2px;
       font-size: 30px;
+
+      &.active {
+        box-shadow: inset 0px 0px 10px 4px #157402;
+      }
     }
   }
 }
