@@ -4,6 +4,7 @@ import { RenderPipeline } from "./render-pipeline";
 import { AssetManager } from "./asset-manager";
 import { AnimatedObject } from "./animated-object";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
+import { Tile } from "./tiles/tile";
 
 export class GameState {
   private renderPipeline: RenderPipeline;
@@ -13,7 +14,7 @@ export class GameState {
   private camera = new THREE.PerspectiveCamera();
   private controls: OrbitControls;
 
-  private animatedObject: AnimatedObject;
+  private groundTiles: Tile[][] = [];
 
   constructor(private assetManager: AssetManager) {
     this.setupCamera();
@@ -26,14 +27,8 @@ export class GameState {
 
     this.scene.background = new THREE.Color("#1680AF");
 
-    // Scene objects
-    this.animatedObject = new AnimatedObject(assetManager);
-    this.animatedObject.position.z = -0.5;
-    this.animatedObject.playAnimation("idle");
-    this.scene.add(this.animatedObject);
-
-    const tile = new GrassWithLeavesTile(0, 0, assetManager);
-    this.scene.add(tile);
+    // Build world
+    this.createGroundTiles();
 
     // Start game
     this.update();
@@ -54,14 +49,38 @@ export class GameState {
     this.scene.add(directLight);
   }
 
+  private createGroundTiles() {
+    // Ground tiles
+    const gridSize = 5;
+    for (let colIndex = 0; colIndex < gridSize; colIndex++) {
+      // Columns move down z axis positively
+      const zPos = colIndex; // everything 1 meter squared so easy maths here
+      const tileRow: Tile[] = [];
+
+      for (let rowIndex = 0; rowIndex < gridSize; rowIndex++) {
+        // Rows move along x axis positively
+        const xPos = rowIndex;
+        const tile = new GrassWithLeavesTile(
+          rowIndex,
+          colIndex,
+          this.assetManager
+        );
+        tile.position.set(xPos, 0, zPos);
+        tileRow.push(tile);
+        this.scene.add(tile);
+      }
+
+      // Now push in the completed row
+      this.groundTiles.push(tileRow);
+    }
+  }
+
   private update = () => {
     requestAnimationFrame(this.update);
 
     const dt = this.clock.getDelta();
 
     this.controls.update();
-
-    this.animatedObject.update(dt);
 
     this.renderPipeline.render(dt);
   };
