@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
-import { eventUpdater, EventMap } from "../../events/event-updater";
+import { eventUpdater, GameEvent } from "../../events/event-updater";
 
-export function useEventUpdater<E extends keyof EventMap>(...events: E[]) {
+export function useEventUpdater(...events: GameEvent[]) {
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
 
   useEffect(() => {

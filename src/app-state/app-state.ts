@@ -20,11 +20,12 @@ class AppState {
   startGame = () => {
     this.gameState = new GameState(this.assetManager);
     this.started = true;
-    eventUpdater.fire("game-started", null);
+    eventUpdater.fire("game-started");
   };
 
   toggleBuildMenu = () => {
     this.showBuildMenu = !this.showBuildMenu;
+    eventUpdater.fire("toggled-build-menu");
   };
 
   private async loadGame() {
@@ -33,7 +34,7 @@ class AppState {
 
   private onLoad = () => {
     this.loaded = true;
-    eventUpdater.fire("game-loaded", null);
+    eventUpdater.fire("game-loaded");
   };
 }
 

@@ -1,31 +1,21 @@
-export interface EventMap {
-  "game-loaded": null;
-  "game-started": null;
-  "toggle-build-menu": null;
-}
+export type GameEvent = "game-loaded" | "game-started" | "toggled-build-menu";
 
-type EventCallback = (event: any) => void;
+type EventCallback = () => void;
 
 class EventUpdater {
-  private callbacks = new Map<keyof EventMap, Set<EventCallback>>();
+  private callbacks = new Map<GameEvent, Set<EventCallback>>();
 
-  on<E extends keyof EventMap>(
-    event: E,
-    callback: (event: EventMap[E]) => void
-  ) {
+  on(event: GameEvent, callback: EventCallback) {
     const callbacks = this.callbacks.get(event) ?? new Set<EventCallback>();
     callbacks.add(callback);
     this.callbacks.set(event, callbacks);
   }
 
-  off<E extends keyof EventMap>(
-    event: E,
-    listener: (event: EventMap[E]) => void
-  ) {
+  off(event: GameEvent, callback: EventCallback) {
     const callbacks = this.callbacks.get(event);
     if (!callbacks) return;
 
-    callbacks.delete(listener);
+    callbacks.delete(callback);
 
     if (!callbacks.size) {
       this.callbacks.delete(event);
@@ -34,9 +24,10 @@ class EventUpdater {
     }
   }
 
-  fire<E extends keyof EventMap>(type: E, event: EventMap[E]) {
-    const callbacks = this.callbacks.get(type) ?? [];
-    callbacks.forEach((cb) => cb(event));
+  fire(event: GameEvent) {
+    const callbacks = this.callbacks.get(event);
+    if (!callbacks) return;
+    callbacks.forEach((cb) => cb());
   }
 }
 
