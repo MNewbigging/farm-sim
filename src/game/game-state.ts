@@ -5,6 +5,7 @@ import { AssetManager, TextureAsset } from "./asset-manager";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile } from "./tiles/tile";
 import { eventUpdater } from "../events/event-updater";
+import { PathTile } from "./tiles/path-tile/path-tile";
 
 export enum BuildItem {
   Path,
@@ -55,6 +56,7 @@ export class GameState {
     this.placingBuildItem = item;
     document.body.style.cursor = "pointer";
     this.renderPipeline.canvas.addEventListener("mousemove", this.onMouseMove);
+    this.renderPipeline.canvas.addEventListener("click", this.onMouseClick);
     eventUpdater.fire("build-item");
   }
 
@@ -65,6 +67,7 @@ export class GameState {
       "mousemove",
       this.onMouseMove
     );
+    this.renderPipeline.canvas.removeEventListener("click", this.onMouseClick);
     eventUpdater.fire("build-item");
   }
 
@@ -110,23 +113,45 @@ export class GameState {
   }
 
   private onMouseMove = (event: MouseEvent) => {
-    // Intersect with ground tiles to highlight them
-    this.ndc.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.ndc.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
     this.renderPipeline.clearOutlines();
+    const hitTile = this.getIntersectedTile(event);
+    if (hitTile) {
+      this.renderPipeline.outlineObject(hitTile);
+    }
+  };
 
+  private getIntersectedTile(event: MouseEvent) {
+    setNdc(event, this.ndc);
     this.raycaster.setFromCamera(this.ndc, this.camera);
+
     for (const row of this.groundTiles) {
       for (const tile of row) {
         const intersections = this.raycaster.intersectObject(tile, false);
-        if (!intersections.length) continue;
 
-        // Outline
-        this.renderPipeline.outlineObject(intersections[0].object);
-        return;
+        if (intersections.length) {
+          return tile;
+        }
       }
     }
+  }
+
+  private onMouseClick = (event: MouseEvent) => {
+    const hitTile = this.getIntersectedTile(event);
+    if (!hitTile) return;
+
+    // Remove this tile and replace with path tile
+    const path = new PathTile(
+      hitTile.rowIndex,
+      hitTile.colIndex,
+      this.assetManager
+    );
+    path.position.copy(hitTile.position);
+
+    this.scene.remove(hitTile);
+    hitTile.dispose();
+
+    this.groundTiles[hitTile.rowIndex][hitTile.colIndex] = path;
+    this.scene.add(path);
   };
 
   private update = () => {
@@ -138,4 +163,9 @@ export class GameState {
 
     this.renderPipeline.render(dt);
   };
+}
+
+function setNdc(event: MouseEvent, target: THREE.Vector2) {
+  target.x = (event.clientX / window.innerWidth) * 2 - 1;
+  target.y = -(event.clientY / window.innerHeight) * 2 + 1;
 }

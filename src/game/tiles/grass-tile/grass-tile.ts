@@ -16,8 +16,14 @@ export class GrassWithLeavesTile extends Tile {
     )!;
 
     const material = new TextureBlendMaterial(textureA, textureB);
+    const geometry = new THREE.PlaneGeometry().rotateX(-Math.PI / 2);
 
-    super(material);
+    super(geometry, material);
+  }
+
+  dispose() {
+    this.geometry.dispose();
+    (this.material as TextureBlendMaterial).dispose();
   }
 }
 
