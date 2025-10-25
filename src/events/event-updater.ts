@@ -1,4 +1,8 @@
-export type GameEvent = "game-loaded" | "game-started" | "toggled-build-menu";
+export type GameEvent =
+  | "game-loaded"
+  | "game-started"
+  | "toggled-build-menu"
+  | "build-item";
 
 type EventCallback = () => void;
 

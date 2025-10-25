@@ -2,11 +2,17 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
 import { AssetManager, TextureAsset } from "./asset-manager";
-import { AnimatedObject } from "./animated-object";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile } from "./tiles/tile";
+import { eventUpdater } from "../events/event-updater";
+
+export enum BuildItem {
+  Path,
+}
 
 export class GameState {
+  placingBuildItem?: BuildItem;
+
   private renderPipeline: RenderPipeline;
   private clock = new THREE.Clock();
 
@@ -35,6 +41,23 @@ export class GameState {
 
     // Start game
     this.update();
+  }
+
+  toggleBuildItem(item: BuildItem) {
+    if (this.placingBuildItem === item) {
+      this.stopPlacingBuildItem();
+      return;
+    }
+
+    this.placingBuildItem = item;
+    document.body.style.cursor = "pointer";
+    eventUpdater.fire("build-item");
+  }
+
+  stopPlacingBuildItem() {
+    this.placingBuildItem = undefined;
+    document.body.style.cursor = "";
+    eventUpdater.fire("build-item");
   }
 
   private setupCamera() {

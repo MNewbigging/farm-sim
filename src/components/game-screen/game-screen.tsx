@@ -13,19 +13,19 @@ export function GameScreen({ gameState }: GameScreenProps) {
 
   const buildActiveClass = appState.showBuildMenu ? "active" : "";
 
-  const buildBtnClasses = ["button", buildActiveClass].join(" ");
+  const buildBtnClass = ["button", buildActiveClass].join(" ");
 
   return (
     <>
       {/* These menus are absolutely positioned, outside normal flow */}
-      <BuildMenu />
+      <BuildMenu gameState={gameState} />
 
       {/* Back to normal flow: */}
       <div className="game-screen">
         <div className="no-touch"></div>
         <div className="bottom-bar-area">
           <div
-            className={buildBtnClasses}
+            className={buildBtnClass}
             data-tooltip="Build"
             onClick={appState.toggleBuildMenu}
           >
