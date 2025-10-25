@@ -22,6 +22,9 @@ export class GameState {
 
   private groundTiles: Tile[][] = [];
 
+  private ndc = new THREE.Vector2();
+  private raycaster = new THREE.Raycaster();
+
   constructor(private assetManager: AssetManager) {
     this.setupCamera();
     this.renderPipeline = new RenderPipeline(this.scene, this.camera);
@@ -51,12 +54,17 @@ export class GameState {
 
     this.placingBuildItem = item;
     document.body.style.cursor = "pointer";
+    this.renderPipeline.canvas.addEventListener("mousemove", this.onMouseMove);
     eventUpdater.fire("build-item");
   }
 
   stopPlacingBuildItem() {
     this.placingBuildItem = undefined;
     document.body.style.cursor = "";
+    this.renderPipeline.canvas.removeEventListener(
+      "mousemove",
+      this.onMouseMove
+    );
     eventUpdater.fire("build-item");
   }
 
@@ -100,6 +108,26 @@ export class GameState {
       this.groundTiles.push(tileRow);
     }
   }
+
+  private onMouseMove = (event: MouseEvent) => {
+    // Intersect with ground tiles to highlight them
+    this.ndc.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.ndc.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.renderPipeline.clearOutlines();
+
+    this.raycaster.setFromCamera(this.ndc, this.camera);
+    for (const row of this.groundTiles) {
+      for (const tile of row) {
+        const intersections = this.raycaster.intersectObject(tile, false);
+        if (!intersections.length) continue;
+
+        // Outline
+        this.renderPipeline.outlineObject(intersections[0].object);
+        return;
+      }
+    }
+  };
 
   private update = () => {
     requestAnimationFrame(this.update);
