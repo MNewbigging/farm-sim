@@ -16,6 +16,8 @@ export enum ModelAsset {
 export enum TextureAsset {
   BANDIT = "bandit-texture.png",
   HDR = "orchard_cartoony.hdr",
+  GrassDiffuse = "grass/Grass_Texture_01.png",
+  GrassLeavesDiffuse = "grass-leaves/Grass_Leaves_Texture_01.png",
 }
 
 export class AssetManager {
@@ -89,6 +91,9 @@ export class AssetManager {
       TextureAsset.HDR,
       (texture) => (texture.mapping = THREE.EquirectangularReflectionMapping)
     );
+
+    this.loadTexture(TextureAsset.GrassDiffuse);
+    this.loadTexture(TextureAsset.GrassLeavesDiffuse);
   }
 
   private loadAnimations() {
