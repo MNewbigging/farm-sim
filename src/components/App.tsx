@@ -9,5 +9,7 @@ export function App() {
 
   const started = appState.started;
 
-  return <div className="ui-root">{!started && <LoadingScreen />}</div>;
+  if (!started) return <LoadingScreen />;
+
+  return null;
 }
