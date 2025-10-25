@@ -10,7 +10,9 @@ export function App() {
 
   if (!started) return <LoadingScreen />;
 
-  if (started) return <GameScreen />;
+  const { gameState } = appState;
+
+  if (gameState) return <GameScreen gameState={gameState} />;
 
   return null;
 }

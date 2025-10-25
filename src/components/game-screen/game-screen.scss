@@ -9,10 +9,40 @@
     user-select: none;
   }
 
-  .bottom-bar {
+  .bottom-bar-area {
     flex: 0 0 50px;
-    background-color: lightblue;
-    border: 2px solid white;
     z-index: 1;
+    background: #2a7b9b;
+    border-top: 2px solid white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .button {
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      background-color: white;
+      border-radius: 4px;
+      border: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2px;
+      font-size: 30px;
+    }
   }
+}
+
+[data-tooltip]:hover::after {
+  display: block;
+  position: absolute;
+  bottom: 50px;
+  content: attr(data-tooltip);
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 0.25em;
+  background: #eee;
+  font-size: 20px;
 }
