@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
-import { AssetManager } from "./asset-manager";
+import { AssetManager, TextureAsset } from "./asset-manager";
 import { AnimatedObject } from "./animated-object";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile } from "./tiles/tile";
@@ -25,7 +25,10 @@ export class GameState {
     this.controls.enableDamping = true;
     this.controls.target.set(0, 1, 0);
 
-    this.scene.background = new THREE.Color("#1680AF");
+    const hdr = this.assetManager.textures.get(TextureAsset.HDR)!;
+    this.scene.environment = hdr;
+    this.scene.background = hdr;
+    //this.scene.background = new THREE.Color("#1680AF");
 
     // Build world
     this.createGroundTiles();
