@@ -18,6 +18,7 @@ export enum TextureAsset {
   HDR = "orchard_cartoony.hdr",
   GrassDiffuse = "grass/Grass_Texture_01.png",
   GrassLeavesDiffuse = "grass-leaves/Grass_Leaves_Texture_01.png",
+  FootpathDiffuse = "footpath/Footpath_Tiles_Texture_01.png",
 }
 
 export class AssetManager {
@@ -92,8 +93,10 @@ export class AssetManager {
       (texture) => (texture.mapping = THREE.EquirectangularReflectionMapping)
     );
 
+    // todo - change color space on these?
     this.loadTexture(TextureAsset.GrassDiffuse);
     this.loadTexture(TextureAsset.GrassLeavesDiffuse);
+    this.loadTexture(TextureAsset.FootpathDiffuse);
   }
 
   private loadAnimations() {
