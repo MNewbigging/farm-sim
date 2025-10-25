@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
-import { AssetManager, ModelAsset } from "./asset-manager";
+import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
 import { AnimatedObject } from "./animated-object";
 
 export class GameState {
@@ -16,11 +16,8 @@ export class GameState {
 
   constructor(private assetManager: AssetManager) {
     this.setupCamera();
-
     this.renderPipeline = new RenderPipeline(this.scene, this.camera);
-
     this.setupLights();
-    this.setupObjects();
 
     this.controls = new OrbitControls(this.camera, this.renderPipeline.canvas);
     this.controls.enableDamping = true;
@@ -28,10 +25,19 @@ export class GameState {
 
     this.scene.background = new THREE.Color("#1680AF");
 
+    // Scene objects
     this.animatedObject = new AnimatedObject(assetManager);
     this.animatedObject.position.z = -0.5;
     this.animatedObject.playAnimation("idle");
     this.scene.add(this.animatedObject);
+
+    const tile = new THREE.Mesh(
+      new THREE.PlaneGeometry(),
+      new THREE.MeshBasicMaterial({
+        map: assetManager.textures.get(TextureAsset.GrassDiffuse),
+      })
+    ).rotateX(-Math.PI / 2);
+    this.scene.add(tile);
 
     // Start game
     this.update();
@@ -50,11 +56,6 @@ export class GameState {
     const directLight = new THREE.DirectionalLight(undefined, Math.PI);
     directLight.position.copy(new THREE.Vector3(0.75, 1, 0.75).normalize());
     this.scene.add(directLight);
-  }
-
-  private setupObjects() {
-    const box = this.assetManager.getModel(ModelAsset.BOX_SMALL);
-    this.scene.add(box);
   }
 
   private update = () => {
