@@ -11,6 +11,7 @@ export enum AnimationAsset {
 export enum ModelAsset {
   BANDIT = "bandit.fbx",
   BOX_SMALL = "box-small.glb",
+  FenceWood2 = "SM_Prop_Fence_Wood_02.fbx",
 }
 
 export enum TextureAsset {
@@ -19,6 +20,7 @@ export enum TextureAsset {
   GrassDiffuse = "grass/Grass_Texture_01.png",
   GrassLeavesDiffuse = "grass-leaves/Grass_Leaves_Texture_01.png",
   FootpathDiffuse = "footpath/Footpath_Tiles_Texture_01.png",
+  Farm = "PolygonFarm_Texture_01_A.png",
 }
 
 export class AssetManager {
@@ -54,7 +56,7 @@ export class AssetManager {
     // Ensure we always return an object 3d
     return new THREE.Mesh(
       new THREE.SphereGeometry(),
-      new THREE.MeshBasicMaterial({ color: "red" })
+      new THREE.MeshBasicMaterial({ color: "red" }),
     );
   }
 
@@ -80,34 +82,52 @@ export class AssetManager {
         }
       });
     });
+
+    this.loadModel(ModelAsset.FenceWood2, (fence: THREE.Group) => {
+      fence.scale.multiplyScalar(0.01);
+    });
   }
 
   private loadTextures() {
     this.loadTexture(
       TextureAsset.BANDIT,
-      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
     );
 
     this.loadTexture(
       TextureAsset.HDR,
-      (texture) => (texture.mapping = THREE.EquirectangularReflectionMapping)
+      (texture) => (texture.mapping = THREE.EquirectangularReflectionMapping),
     );
 
     // todo - change color space on these?
-    this.loadTexture(TextureAsset.GrassDiffuse);
-    this.loadTexture(TextureAsset.GrassLeavesDiffuse);
-    this.loadTexture(TextureAsset.FootpathDiffuse);
+    this.loadTexture(
+      TextureAsset.GrassDiffuse,
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+    );
+    this.loadTexture(
+      TextureAsset.GrassLeavesDiffuse,
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+    );
+    this.loadTexture(
+      TextureAsset.FootpathDiffuse,
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+    );
+
+    this.loadTexture(
+      TextureAsset.Farm,
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+    );
   }
 
   private loadAnimations() {
     Object.values(AnimationAsset).forEach((filename) =>
-      this.loadAnimation(filename)
+      this.loadAnimation(filename),
     );
   }
 
   private loadModel(
     filename: ModelAsset,
-    onLoad?: (group: THREE.Group) => void
+    onLoad?: (group: THREE.Group) => void,
   ) {
     const path = `${getPathPrefix()}/models/${filename}`;
     const url = getUrl(path);
@@ -133,7 +153,7 @@ export class AssetManager {
 
   private loadTexture(
     filename: TextureAsset,
-    onLoad?: (texture: THREE.Texture) => void
+    onLoad?: (texture: THREE.Texture) => void,
   ) {
     const path = `${getPathPrefix()}/textures/${filename}`;
     const url = getUrl(path);
