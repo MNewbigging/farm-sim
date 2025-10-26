@@ -157,7 +157,45 @@ export class GameState {
 
     this.groundTiles[hitTile.rowIndex][hitTile.colIndex] = path;
     this.scene.add(path);
+
+    this.updatePathConnections(path);
   };
+
+  private updatePathConnections(pathTile: PathTile) {
+    const { rowIndex, colIndex } = pathTile;
+
+    const upTile =
+      rowIndex - 1 >= 0 ? this.groundTiles[rowIndex - 1][colIndex] : undefined;
+    if (upTile instanceof PathTile) {
+      upTile.connectDown();
+      pathTile.connectUp();
+    }
+
+    const downTile =
+      rowIndex + 1 < this.groundTiles.length
+        ? this.groundTiles[rowIndex + 1][colIndex]
+        : undefined;
+    if (downTile instanceof PathTile) {
+      downTile.connectUp();
+      pathTile.connectDown();
+    }
+
+    const leftTile =
+      colIndex - 1 >= 0 ? this.groundTiles[rowIndex][colIndex - 1] : undefined;
+    if (leftTile instanceof PathTile) {
+      leftTile.connectRight();
+      pathTile.connectLeft();
+    }
+
+    const rightTile =
+      colIndex + 1 < this.groundTiles[0].length
+        ? this.groundTiles[rowIndex][colIndex + 1]
+        : undefined;
+    if (rightTile instanceof PathTile) {
+      rightTile.connectLeft();
+      pathTile.connectRight();
+    }
+  }
 
   private update = () => {
     requestAnimationFrame(this.update);

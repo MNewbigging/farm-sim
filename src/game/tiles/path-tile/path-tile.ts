@@ -10,7 +10,7 @@ export class PathTile extends Tile {
   constructor(
     public readonly rowIndex: number,
     public readonly colIndex: number,
-    assetManager: AssetManager
+    assetManager: AssetManager,
   ) {
     const textureA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
     const textureB = assetManager.textures.get(TextureAsset.FootpathDiffuse)!;
@@ -24,7 +24,7 @@ export class PathTile extends Tile {
       1,
       1,
       divisions,
-      divisions
+      divisions,
     ).rotateX(-Math.PI / 2);
 
     // Create custom attribute for shader to use
@@ -52,6 +52,86 @@ export class PathTile extends Tile {
   dispose() {
     this.geometry.dispose();
     (this.material as PathTileMaterial).dispose();
+  }
+
+  connectUp() {
+    const pathAttrib = this.geometry.getAttribute("pathAttribute");
+
+    pathAttrib.array[1] = 255;
+    pathAttrib.array[2] = 255;
+    pathAttrib.array[3] = 255;
+
+    // Check top left diagonal
+    if (pathAttrib.array[5] === 255) {
+      pathAttrib.array[0] === 255;
+    }
+
+    // Top right diagonal
+    if (pathAttrib.array[9] === 255) {
+      pathAttrib.array[4] = 255;
+    }
+
+    pathAttrib.needsUpdate = true;
+  }
+
+  connectRight() {
+    const pathAttrib = this.geometry.getAttribute("pathAttribute");
+
+    pathAttrib.array[9] = 255;
+    pathAttrib.array[14] = 255;
+    pathAttrib.array[19] = 255;
+
+    // Top right diagonal
+    if (pathAttrib.array[3] === 255) {
+      pathAttrib.array[4] === 255;
+    }
+
+    // Bot right diagonal
+    if (pathAttrib.array[23] === 255) {
+      pathAttrib.array[24] = 255;
+    }
+
+    pathAttrib.needsUpdate = true;
+  }
+
+  connectDown() {
+    const pathAttrib = this.geometry.getAttribute("pathAttribute");
+
+    pathAttrib.array[21] = 255;
+    pathAttrib.array[22] = 255;
+    pathAttrib.array[23] = 255;
+
+    // Bot right diagonal
+    if (pathAttrib.array[19] === 255) {
+      pathAttrib.array[24] = 255;
+    }
+
+    // Bot left diagonal
+    if (pathAttrib.array[15] === 255) {
+      pathAttrib.array[20] = 255;
+    }
+
+    pathAttrib.needsUpdate = true;
+  }
+
+  connectLeft() {
+    const pathAttrib = this.geometry.getAttribute("pathAttribute");
+
+    pathAttrib.array[5] = 255;
+    pathAttrib.array[10] = 255;
+    pathAttrib.array[15] = 255;
+
+    // Top left diagonal
+    if (pathAttrib.array[1] === 255) {
+      pathAttrib.array[0] = 255;
+    }
+
+    // Bot left diagonal
+    if (pathAttrib.array[21] === 255) {
+      pathAttrib.array[20] = 255;
+    }
+
+    pathAttrib.needsUpdate = true;
   }
 }
 
