@@ -65,9 +65,10 @@ export class GameState {
     document.body.style.cursor = "";
     this.renderPipeline.canvas.removeEventListener(
       "mousemove",
-      this.onMouseMove
+      this.onMouseMove,
     );
     this.renderPipeline.canvas.removeEventListener("click", this.onMouseClick);
+    this.renderPipeline.clearOutlines();
     eventUpdater.fire("build-item");
   }
 
@@ -89,20 +90,20 @@ export class GameState {
   private createGroundTiles() {
     // Ground tiles
     const gridSize = 5;
-    for (let colIndex = 0; colIndex < gridSize; colIndex++) {
-      // Columns move down z axis positively
-      const zPos = colIndex; // everything 1 meter squared so easy maths here
+    for (let rowIndex = 0; rowIndex < gridSize; rowIndex++) {
+      // Rows move down z axis positively
+      const zPos = rowIndex; // everything 1 meter squared so easy maths here
       const tileRow: Tile[] = [];
 
-      for (let rowIndex = 0; rowIndex < gridSize; rowIndex++) {
-        // Rows move along x axis positively
-        const xPos = rowIndex;
+      for (let colIndex = 0; colIndex < gridSize; colIndex++) {
+        // Columns move along x axis positively
+        const xPos = colIndex;
         const tile = new GrassWithLeavesTile(
           rowIndex,
           colIndex,
-          this.assetManager
+          this.assetManager,
         );
-        tile.position.set(xPos, 0, zPos);
+        tile.position.set(xPos, 0, zPos); // x from column, z from row
         tileRow.push(tile);
         this.scene.add(tile);
       }
@@ -143,8 +144,9 @@ export class GameState {
     const path = new PathTile(
       hitTile.rowIndex,
       hitTile.colIndex,
-      this.assetManager
+      this.assetManager,
     );
+
     path.position.copy(hitTile.position);
 
     this.scene.remove(hitTile);
