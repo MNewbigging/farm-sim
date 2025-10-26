@@ -140,6 +140,9 @@ export class GameState {
     const hitTile = this.getIntersectedTile(event);
     if (!hitTile) return;
 
+    // Don't replace path with path
+    if (hitTile instanceof PathTile) return;
+
     // Remove this tile and replace with path tile
     const path = new PathTile(
       hitTile.rowIndex,
