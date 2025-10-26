@@ -84,7 +84,8 @@ export class AssetManager {
     });
 
     this.loadModel(ModelAsset.FenceWood2, (fence: THREE.Group) => {
-      fence.scale.multiplyScalar(0.01);
+      fence.scale.set(0.004, 0.005, 0.005);
+      fence.translateX(-0.5);
     });
   }
 

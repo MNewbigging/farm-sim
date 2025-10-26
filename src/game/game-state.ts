@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
-import { AssetManager, TextureAsset } from "./asset-manager";
+import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile } from "./tiles/tile";
 import { BuildItemBehaviour } from "./build-items/build-item-behaviour";
@@ -42,6 +42,12 @@ export class GameState {
 
     // Build world
     this.createGroundTiles();
+
+    const fence = this.assetManager.getModel(
+      ModelAsset.FenceWood2,
+    ) as THREE.Mesh;
+    this.assetManager.applyModelTexture(fence, TextureAsset.Farm);
+    //this.scene.add(fence);
 
     // Start game
     this.update();

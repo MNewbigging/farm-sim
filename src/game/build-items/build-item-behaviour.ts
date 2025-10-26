@@ -3,6 +3,7 @@ import { eventUpdater } from "../../events/event-updater";
 import { AssetManager } from "../asset-manager";
 import { RenderPipeline } from "../render-pipeline";
 import { Tile } from "../tiles/tile";
+import { FencePlacer } from "./fence-placer";
 import { PathTilePlacer } from "./path-tile-placer";
 
 export enum BuildItem {
@@ -12,6 +13,7 @@ export enum BuildItem {
 
 export interface BuildItemPlacer {
   isTileValid: (tile: Tile) => boolean;
+  onHoverTile?: (tile: Tile) => void;
   onPlace: (tile: Tile) => void;
 }
 
@@ -51,6 +53,14 @@ export class BuildItemBehaviour {
           this.groundTiles,
         );
         break;
+      case BuildItem.Fence:
+        this.currentPlacer = new FencePlacer(this.scene, this.assetManager);
+        break;
+    }
+
+    if (!this.currentPlacer) {
+      this.stopPlacingBuildItem();
+      return;
     }
 
     document.body.style.cursor = "pointer";
@@ -88,14 +98,19 @@ export class BuildItemBehaviour {
   }
 
   private onMouseMove = (event: MouseEvent) => {
+    if (!this.currentPlacer) return;
+
     this.renderPipeline.clearOutlines();
+
     const hitTile = this.getIntersectedTile(event);
-    if (hitTile) {
-      // todo - change outline blur colour if invalid?
-      if (this.currentPlacer?.isTileValid(hitTile)) {
-        this.renderPipeline.outlineObject(hitTile);
-      }
+    if (!hitTile) return;
+
+    // todo - change outline blur colour if invalid?
+    if (this.currentPlacer?.isTileValid(hitTile)) {
+      this.renderPipeline.outlineObject(hitTile);
     }
+
+    this.currentPlacer?.onHoverTile?.(hitTile);
   };
 
   private onMouseClick = (event: MouseEvent) => {
