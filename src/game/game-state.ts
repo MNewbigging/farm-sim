@@ -44,7 +44,7 @@ export class GameState {
     this.createGroundTiles();
 
     const fence = this.assetManager.getModel(
-      ModelAsset.FenceWood2,
+      ModelAsset.FenceWood,
     ) as THREE.Mesh;
     this.assetManager.applyModelTexture(fence, TextureAsset.Farm);
     //this.scene.add(fence);

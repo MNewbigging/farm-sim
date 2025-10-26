@@ -11,7 +11,8 @@ export enum AnimationAsset {
 export enum ModelAsset {
   BANDIT = "bandit.fbx",
   BOX_SMALL = "box-small.glb",
-  FenceWood2 = "SM_Prop_Fence_Wood_02.fbx",
+  FenceWood = "SM_Prop_Fence_Wood_02.fbx",
+  FenceWoodPole = "SM_Prop_Fence_Wood_Pole_01.fbx",
 }
 
 export enum TextureAsset {
@@ -83,9 +84,13 @@ export class AssetManager {
       });
     });
 
-    this.loadModel(ModelAsset.FenceWood2, (fence: THREE.Group) => {
+    this.loadModel(ModelAsset.FenceWood, (fence: THREE.Group) => {
       fence.scale.set(0.004, 0.005, 0.005);
       fence.translateX(-0.5);
+    });
+
+    this.loadModel(ModelAsset.FenceWoodPole, (pole: THREE.Group) => {
+      pole.scale.set(0.005, 0.005, 0.005);
     });
   }
 

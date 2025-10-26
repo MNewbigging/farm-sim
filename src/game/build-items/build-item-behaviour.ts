@@ -15,6 +15,7 @@ export interface BuildItemPlacer {
   isTileValid: (tile: Tile) => boolean;
   onHoverTile?: (tile: Tile) => void;
   onPlace: (tile: Tile) => void;
+  onStop?: () => void;
 }
 
 export class BuildItemBehaviour {
@@ -70,6 +71,7 @@ export class BuildItemBehaviour {
   }
 
   stopPlacingBuildItem() {
+    this.currentPlacer?.onStop?.();
     this.placingBuildItem = undefined;
     this.currentPlacer = undefined;
     document.body.style.cursor = "";
