@@ -1,17 +1,24 @@
 import * as THREE from "three";
-import { eventUpdater } from "../events/event-updater";
-import { AssetManager } from "./asset-manager";
-import { RenderPipeline } from "./render-pipeline";
-import { PathTile } from "./tiles/path-tile/path-tile";
-import { Tile } from "./tiles/tile";
+import { eventUpdater } from "../../events/event-updater";
+import { AssetManager } from "../asset-manager";
+import { RenderPipeline } from "../render-pipeline";
+import { Tile } from "../tiles/tile";
+import { PathTilePlacer } from "./path-tile-placer";
 
 export enum BuildItem {
   Path = "Path",
   Fence = "Fence",
 }
 
+export interface BuildItemPlacer {
+  isTileValid: (tile: Tile) => boolean;
+  onPlace: (tile: Tile) => void;
+}
+
 export class BuildItemBehaviour {
   placingBuildItem?: BuildItem;
+
+  private currentPlacer?: BuildItemPlacer;
 
   private ndc = new THREE.Vector2();
   private raycaster = new THREE.Raycaster();
@@ -27,10 +34,25 @@ export class BuildItemBehaviour {
   toggleBuildItem(item: BuildItem) {
     if (this.placingBuildItem === item) {
       this.stopPlacingBuildItem();
-      return;
+      return; // this is the toggle part
+    } else if (this.placingBuildItem) {
+      // placing something else - remove it and start placing this new item
+      this.stopPlacingBuildItem();
     }
 
+    // Start placing new item
     this.placingBuildItem = item;
+
+    switch (item) {
+      case BuildItem.Path:
+        this.currentPlacer = new PathTilePlacer(
+          this.scene,
+          this.assetManager,
+          this.groundTiles,
+        );
+        break;
+    }
+
     document.body.style.cursor = "pointer";
     this.renderPipeline.canvas.addEventListener("mousemove", this.onMouseMove);
     this.renderPipeline.canvas.addEventListener("click", this.onMouseClick);
@@ -39,6 +61,7 @@ export class BuildItemBehaviour {
 
   stopPlacingBuildItem() {
     this.placingBuildItem = undefined;
+    this.currentPlacer = undefined;
     document.body.style.cursor = "";
     this.renderPipeline.canvas.removeEventListener(
       "mousemove",
@@ -68,70 +91,23 @@ export class BuildItemBehaviour {
     this.renderPipeline.clearOutlines();
     const hitTile = this.getIntersectedTile(event);
     if (hitTile) {
-      this.renderPipeline.outlineObject(hitTile);
+      // todo - change outline blur colour if invalid?
+      if (this.currentPlacer?.isTileValid(hitTile)) {
+        this.renderPipeline.outlineObject(hitTile);
+      }
     }
   };
 
   private onMouseClick = (event: MouseEvent) => {
+    if (!this.currentPlacer) return;
+
     const hitTile = this.getIntersectedTile(event);
     if (!hitTile) return;
 
-    // Don't replace path with path
-    if (hitTile instanceof PathTile) return;
-
-    // Remove this tile and replace with path tile
-    const path = new PathTile(
-      hitTile.rowIndex,
-      hitTile.colIndex,
-      this.assetManager,
-    );
-
-    path.position.copy(hitTile.position);
-
-    this.scene.remove(hitTile);
-    hitTile.dispose();
-
-    this.groundTiles[hitTile.rowIndex][hitTile.colIndex] = path;
-    this.scene.add(path);
-
-    this.updatePathConnections(path);
+    if (this.currentPlacer.isTileValid(hitTile)) {
+      this.currentPlacer.onPlace(hitTile);
+    }
   };
-
-  private updatePathConnections(pathTile: PathTile) {
-    const { rowIndex, colIndex } = pathTile;
-
-    const upTile =
-      rowIndex - 1 >= 0 ? this.groundTiles[rowIndex - 1][colIndex] : undefined;
-    if (upTile instanceof PathTile) {
-      upTile.connectDown();
-      pathTile.connectUp();
-    }
-
-    const downTile =
-      rowIndex + 1 < this.groundTiles.length
-        ? this.groundTiles[rowIndex + 1][colIndex]
-        : undefined;
-    if (downTile instanceof PathTile) {
-      downTile.connectUp();
-      pathTile.connectDown();
-    }
-
-    const leftTile =
-      colIndex - 1 >= 0 ? this.groundTiles[rowIndex][colIndex - 1] : undefined;
-    if (leftTile instanceof PathTile) {
-      leftTile.connectRight();
-      pathTile.connectLeft();
-    }
-
-    const rightTile =
-      colIndex + 1 < this.groundTiles[0].length
-        ? this.groundTiles[rowIndex][colIndex + 1]
-        : undefined;
-    if (rightTile instanceof PathTile) {
-      rightTile.connectLeft();
-      pathTile.connectRight();
-    }
-  }
 }
 
 function setNdc(event: MouseEvent, target: THREE.Vector2) {

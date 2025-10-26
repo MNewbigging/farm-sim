@@ -4,9 +4,7 @@ import { RenderPipeline } from "./render-pipeline";
 import { AssetManager, TextureAsset } from "./asset-manager";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile } from "./tiles/tile";
-import { eventUpdater } from "../events/event-updater";
-import { PathTile } from "./tiles/path-tile/path-tile";
-import { BuildItemBehaviour } from "./build-item-behaviour";
+import { BuildItemBehaviour } from "./build-items/build-item-behaviour";
 
 export class GameState {
   buildItemBehaviour: BuildItemBehaviour;

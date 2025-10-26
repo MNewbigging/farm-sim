@@ -2,7 +2,7 @@ import { appState } from "../../../app-state/app-state";
 import {
   BuildItem,
   BuildItemBehaviour,
-} from "../../../game/build-item-behaviour";
+} from "../../../game/build-items/build-item-behaviour";
 import { GameState } from "../../../game/game-state";
 import { useEventUpdater } from "../../hooks/use-event-updater";
 import "./build-menu.scss";
