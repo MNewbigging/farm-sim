@@ -25,6 +25,12 @@ class AppState {
 
   toggleBuildMenu = () => {
     this.showBuildMenu = !this.showBuildMenu;
+
+    // Hiding menu - stop placing stuff
+    if (!this.showBuildMenu) {
+      this.gameState?.buildItemBehaviour.stopPlacingBuildItem();
+    }
+
     eventUpdater.fire("toggled-build-menu");
   };
 

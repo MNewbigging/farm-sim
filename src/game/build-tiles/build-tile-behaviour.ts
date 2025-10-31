@@ -33,11 +33,12 @@ export class BuildTileBehaviour {
   ) {}
 
   toggleBuildItem(item: BuildTile) {
+    // Toggle off
     if (this.placingBuildItem === item) {
       this.stopPlacingBuildItem();
-      return; // this is the toggle part
+      return;
     } else if (this.placingBuildItem) {
-      // placing something else - remove it and start placing this new item
+      // Currently placing something else - remove it and start placing this new item
       this.stopPlacingBuildItem();
     }
 
@@ -73,6 +74,8 @@ export class BuildTileBehaviour {
   }
 
   stopPlacingBuildItem() {
+    if (!this.placingBuildItem) return;
+
     this.currentPlacer?.onStop?.();
     this.placingBuildItem = undefined;
     this.currentPlacer = undefined;
