@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
-import { Tile } from "./tiles/tile";
+import { Tile, TileNeighbours } from "./tiles/tile";
 import { AssetManager } from "./asset-manager";
 import { setNdc } from "../utils/utils";
 
@@ -35,27 +35,41 @@ export class WorldManager {
     return this.groundTiles[rowIndex][colIndex];
   }
 
-  getTileNeighbours(
-    rowIndex: number,
-    colIndex: number
-  ): { up?: Tile; down?: Tile; left?: Tile; right?: Tile } {
-    const up =
-      rowIndex - 1 >= 0 ? this.groundTiles[rowIndex - 1][colIndex] : undefined;
+  getTileNeighbours(tile: Tile): TileNeighbours {
+    const { rowIndex, colIndex } = tile;
 
-    const down =
-      rowIndex + 1 < this.groundTiles.length
-        ? this.groundTiles[rowIndex + 1][colIndex]
-        : undefined;
+    const upRow = rowIndex - 1;
+    const downRow = rowIndex + 1;
+    const leftCol = colIndex - 1;
+    const rightCol = colIndex + 1;
 
-    const left =
-      colIndex - 1 >= 0 ? this.groundTiles[rowIndex][colIndex - 1] : undefined;
+    const upOk = () => upRow >= 0;
+    const downOk = () => downRow < this.groundTiles.length;
+    const leftOk = () => leftCol >= 0;
+    const rightOk = () => rightCol < this.groundTiles[0].length;
 
-    const right =
-      colIndex + 1 < this.groundTiles[0].length
-        ? this.groundTiles[rowIndex][colIndex + 1]
-        : undefined;
+    // Always in order of TileNeighbour enum for easier lookup
+    const upLeft =
+      upOk() && leftOk() ? this.groundTiles[upRow][leftCol] : undefined;
 
-    return { up, down, left, right };
+    const up = upOk() ? this.groundTiles[upRow][colIndex] : undefined;
+
+    const upRight =
+      upOk() && rightOk() ? this.groundTiles[upRow][rightCol] : undefined;
+
+    const right = rightOk() ? this.groundTiles[rowIndex][rightCol] : undefined;
+
+    const downRight =
+      downOk() && rightOk() ? this.groundTiles[downRow][rightCol] : undefined;
+
+    const down = downOk() ? this.groundTiles[downRow][colIndex] : undefined;
+
+    const downLeft =
+      downOk() && leftOk() ? this.groundTiles[downRow][leftCol] : undefined;
+
+    const left = leftOk() ? this.groundTiles[rowIndex][leftCol] : undefined;
+
+    return { upLeft, up, upRight, right, downRight, down, downLeft, left };
   }
 
   replaceTile(newTile: Tile) {

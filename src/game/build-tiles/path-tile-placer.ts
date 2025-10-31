@@ -31,16 +31,32 @@ export class PathTilePlacer implements BuildTilePlacer {
   }
 
   private updatePathConnections(pathTile: PathTile) {
-    const { rowIndex, colIndex } = pathTile;
+    const { upLeft, up, upRight, right, downRight, down, downLeft, left } =
+      this.worldManager.getTileNeighbours(pathTile);
 
-    const { up, down, left, right } = this.worldManager.getTileNeighbours(
-      rowIndex,
-      colIndex
-    );
+    if (upLeft instanceof PathTile) {
+      upLeft.connectDownRight();
+      pathTile.connectUpLeft();
+    }
 
     if (up instanceof PathTile) {
       up.connectDown();
       pathTile.connectUp();
+    }
+
+    if (upRight instanceof PathTile) {
+      upRight.connectDownLeft();
+      pathTile.connectUpRight();
+    }
+
+    if (right instanceof PathTile) {
+      right.connectLeft();
+      pathTile.connectRight();
+    }
+
+    if (downRight instanceof PathTile) {
+      downRight.connectUpLeft();
+      pathTile.connectDownRight();
     }
 
     if (down instanceof PathTile) {
@@ -48,14 +64,14 @@ export class PathTilePlacer implements BuildTilePlacer {
       pathTile.connectDown();
     }
 
+    if (downLeft instanceof PathTile) {
+      downLeft.connectUpRight();
+      pathTile.connectDownLeft();
+    }
+
     if (left instanceof PathTile) {
       left.connectRight();
       pathTile.connectLeft();
-    }
-
-    if (right instanceof PathTile) {
-      right.connectLeft();
-      pathTile.connectRight();
     }
   }
 }

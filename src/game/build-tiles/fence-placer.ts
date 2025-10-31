@@ -1,15 +1,10 @@
 import * as THREE from "three";
 import { keyboardListener } from "../../listeners/keyboard-listener";
 import { AssetManager } from "../asset-manager";
-import { Tile } from "../tiles/tile";
+import { nextTileEdge, Tile, TileEdge } from "../tiles/tile";
 import { BuildTilePlacer } from "./build-tile-mode";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
-import {
-  FenceTile,
-  makeFenceProp,
-  nextTileEdge,
-  TileEdge,
-} from "../tiles/fence-tile/fence-tile";
+import { FenceTile, makeFenceProp } from "../tiles/fence-tile/fence-tile";
 import { WorldManager } from "../world-manager";
 
 export class FencePlacer implements BuildTilePlacer {

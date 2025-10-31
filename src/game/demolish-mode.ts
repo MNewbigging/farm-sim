@@ -1,6 +1,8 @@
+import { AssetManager } from "./asset-manager";
 import { Mode, ModeName } from "./mode-manager";
 import { RenderPipeline } from "./render-pipeline";
 import { FenceTile } from "./tiles/fence-tile/fence-tile";
+import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { PathTile } from "./tiles/path-tile/path-tile";
 import { Tile } from "./tiles/tile";
 import { WorldManager } from "./world-manager";
@@ -13,7 +15,8 @@ export class DemolishMode implements Mode {
 
   constructor(
     private renderPipeline: RenderPipeline,
-    private worldManager: WorldManager
+    private worldManager: WorldManager,
+    private assetManager: AssetManager
   ) {}
 
   enable(): void {
@@ -21,6 +24,7 @@ export class DemolishMode implements Mode {
 
     // Change cursor
     this.renderPipeline.canvas.addEventListener("mousemove", this.onMouseMove);
+    this.renderPipeline.canvas.addEventListener("click", this.onClick);
 
     this.enabled = true;
   }
@@ -32,6 +36,9 @@ export class DemolishMode implements Mode {
       "mousemove",
       this.onMouseMove
     );
+    this.renderPipeline.canvas.removeEventListener("click", this.onClick);
+
+    this.renderPipeline.clearOutlines();
 
     this.enabled = false;
   }
@@ -63,5 +70,31 @@ export class DemolishMode implements Mode {
     if (tile instanceof PathTile) return true;
 
     return false;
+  }
+
+  private onClick = () => {
+    if (!this.lastTile) return;
+    if (!this.canBeDemolished(this.lastTile)) return;
+
+    this.demolishTile(this.lastTile);
+  };
+
+  private demolishTile(tile: Tile) {
+    // Really just means to replace it with grass
+    const grass = new GrassWithLeavesTile(
+      tile.rowIndex,
+      tile.colIndex,
+      this.assetManager
+    );
+
+    if (tile instanceof PathTile) {
+      this.updatePathConnections(tile);
+    }
+
+    this.worldManager.replaceTile(grass);
+  }
+
+  private updatePathConnections(tile: PathTile) {
+    //
   }
 }

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils";
 import { GrassWithLeavesTile } from "../grass-tile/grass-tile";
 import { AssetManager, ModelAsset, TextureAsset } from "../../asset-manager";
+import { TileEdge } from "../tile";
 
 /**
  * Fences are not tiles, they are objects that sit on top of tiles.
@@ -14,23 +15,6 @@ import { AssetManager, ModelAsset, TextureAsset } from "../../asset-manager";
  * - can contain logic for having fences on each edge
  *
  */
-
-export enum TileEdge {
-  Down, // default
-  Left,
-  Up,
-  Right,
-}
-
-export function nextTileEdge(curEdge: TileEdge) {
-  const edges = [TileEdge.Down, TileEdge.Left, TileEdge.Up, TileEdge.Right];
-
-  if (curEdge + 1 < edges.length) {
-    return edges[curEdge + 1];
-  } else {
-    return TileEdge.Down;
-  }
-}
 
 export class FenceTile extends GrassWithLeavesTile {
   private fencedEdges: TileEdge[] = [];

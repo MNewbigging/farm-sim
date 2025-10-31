@@ -59,7 +59,8 @@ export class GameState {
 
     this.demolishMode = new DemolishMode(
       this.renderPipeline,
-      this.worldManager
+      this.worldManager,
+      this.assetManager
     );
 
     this.modeManager = new ModeManager(this.buildTileMode, this.demolishMode);

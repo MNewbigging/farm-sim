@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Tile } from "../tile";
+import { Tile, TileNeighbours } from "../tile";
 import pathTileVS from "./path-tile.vs";
 import pathTileFS from "./path-tile.fs";
 import { AssetManager, TextureAsset } from "../../asset-manager";
@@ -63,6 +63,14 @@ export class PathTile extends Tile {
     (this.material as PathTileMaterial).dispose();
   }
 
+  connectUpLeft() {
+    const pathAttrib = this.geometry.getAttribute("pathAttribute");
+
+    pathAttrib.array[0] === 255;
+
+    pathAttrib.needsUpdate = true;
+  }
+
   connectUp() {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
@@ -70,15 +78,13 @@ export class PathTile extends Tile {
     pathAttrib.array[2] = 255;
     pathAttrib.array[3] = 255;
 
-    // Check top left diagonal
-    if (pathAttrib.array[5] === 255) {
-      pathAttrib.array[0] === 255;
-    }
+    pathAttrib.needsUpdate = true;
+  }
 
-    // Top right diagonal
-    if (pathAttrib.array[9] === 255) {
-      pathAttrib.array[4] = 255;
-    }
+  connectUpRight() {
+    const pathAttrib = this.geometry.getAttribute("pathAttribute");
+
+    pathAttrib.array[4] === 255;
 
     pathAttrib.needsUpdate = true;
   }
@@ -90,15 +96,13 @@ export class PathTile extends Tile {
     pathAttrib.array[14] = 255;
     pathAttrib.array[19] = 255;
 
-    // Top right diagonal
-    if (pathAttrib.array[3] === 255) {
-      pathAttrib.array[4] === 255;
-    }
+    pathAttrib.needsUpdate = true;
+  }
 
-    // Bot right diagonal
-    if (pathAttrib.array[23] === 255) {
-      pathAttrib.array[24] = 255;
-    }
+  connectDownRight() {
+    const pathAttrib = this.geometry.getAttribute("pathAttribute");
+
+    pathAttrib.array[24] === 255;
 
     pathAttrib.needsUpdate = true;
   }
@@ -110,15 +114,13 @@ export class PathTile extends Tile {
     pathAttrib.array[22] = 255;
     pathAttrib.array[23] = 255;
 
-    // Bot right diagonal
-    if (pathAttrib.array[19] === 255) {
-      pathAttrib.array[24] = 255;
-    }
+    pathAttrib.needsUpdate = true;
+  }
 
-    // Bot left diagonal
-    if (pathAttrib.array[15] === 255) {
-      pathAttrib.array[20] = 255;
-    }
+  connectDownLeft() {
+    const pathAttrib = this.geometry.getAttribute("pathAttribute");
+
+    pathAttrib.array[20] === 255;
 
     pathAttrib.needsUpdate = true;
   }
@@ -129,16 +131,6 @@ export class PathTile extends Tile {
     pathAttrib.array[5] = 255;
     pathAttrib.array[10] = 255;
     pathAttrib.array[15] = 255;
-
-    // Top left diagonal
-    if (pathAttrib.array[1] === 255) {
-      pathAttrib.array[0] = 255;
-    }
-
-    // Bot left diagonal
-    if (pathAttrib.array[21] === 255) {
-      pathAttrib.array[20] = 255;
-    }
 
     pathAttrib.needsUpdate = true;
   }
