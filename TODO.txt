@@ -1,0 +1,7 @@
+- delete built item
+- merge fence geometry
+
+- limit fence to one per unoccupied tile?
+
+- change outline colour to red when placement is invalid
+- RTS camera controller

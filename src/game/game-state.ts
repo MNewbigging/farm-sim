@@ -5,6 +5,7 @@ import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile } from "./tiles/tile";
 import { BuildItemBehaviour } from "./build-items/build-item-behaviour";
+import { WorldManager } from "./world-manager";
 
 export class GameState {
   buildItemBehaviour: BuildItemBehaviour;
@@ -16,7 +17,7 @@ export class GameState {
   private camera = new THREE.PerspectiveCamera();
   private controls: OrbitControls;
 
-  private groundTiles: Tile[][] = [];
+  private worldManager: WorldManager;
 
   constructor(private assetManager: AssetManager) {
     this.setupCamera();
@@ -32,19 +33,24 @@ export class GameState {
     this.scene.background = hdr;
     //this.scene.background = new THREE.Color("#1680AF");
 
-    this.buildItemBehaviour = new BuildItemBehaviour(
+    this.worldManager = new WorldManager(
       this.scene,
       this.camera,
+      this.assetManager
+    );
+
+    this.buildItemBehaviour = new BuildItemBehaviour(
+      this.scene,
       this.renderPipeline,
       this.assetManager,
-      this.groundTiles,
+      this.worldManager
     );
 
     // Build world
-    this.createGroundTiles();
+    this.worldManager.buildWorld();
 
     const fence = this.assetManager.getModel(
-      ModelAsset.FenceWood,
+      ModelAsset.FenceWood
     ) as THREE.Mesh;
     this.assetManager.applyModelTexture(fence, TextureAsset.Farm);
     //this.scene.add(fence);
@@ -66,32 +72,6 @@ export class GameState {
     const directLight = new THREE.DirectionalLight(undefined, Math.PI);
     directLight.position.copy(new THREE.Vector3(0.75, 1, 0.75).normalize());
     this.scene.add(directLight);
-  }
-
-  private createGroundTiles() {
-    // Ground tiles
-    const gridSize = 5;
-    for (let rowIndex = 0; rowIndex < gridSize; rowIndex++) {
-      // Rows move down z axis positively
-      const zPos = rowIndex; // everything 1 meter squared so easy maths here
-      const tileRow: Tile[] = [];
-
-      for (let colIndex = 0; colIndex < gridSize; colIndex++) {
-        // Columns move along x axis positively
-        const xPos = colIndex;
-        const tile = new GrassWithLeavesTile(
-          rowIndex,
-          colIndex,
-          this.assetManager,
-        );
-        tile.position.set(xPos, 0, zPos); // x from column, z from row
-        tileRow.push(tile);
-        this.scene.add(tile);
-      }
-
-      // Now push in the completed row
-      this.groundTiles.push(tileRow);
-    }
   }
 
   private update = () => {

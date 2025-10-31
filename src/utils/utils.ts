@@ -17,3 +17,8 @@ export function addGui(object: THREE.Object3D, name = "") {
 
   gui.add(object.scale, "x").name(name + " scale x");
 }
+
+export function setNdc(event: MouseEvent, target: THREE.Vector2) {
+  target.x = (event.clientX / window.innerWidth) * 2 - 1;
+  target.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}

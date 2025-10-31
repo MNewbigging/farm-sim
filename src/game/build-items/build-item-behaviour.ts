@@ -5,6 +5,7 @@ import { RenderPipeline } from "../render-pipeline";
 import { Tile } from "../tiles/tile";
 import { FencePlacer } from "./fence-placer";
 import { PathTilePlacer } from "./path-tile-placer";
+import { WorldManager } from "../world-manager";
 
 export enum BuildItem {
   Path = "Path",
@@ -23,15 +24,11 @@ export class BuildItemBehaviour {
 
   private currentPlacer?: BuildItemPlacer;
 
-  private ndc = new THREE.Vector2();
-  private raycaster = new THREE.Raycaster();
-
   constructor(
     private scene: THREE.Scene,
-    private camera: THREE.Camera,
     private renderPipeline: RenderPipeline,
     private assetManager: AssetManager,
-    private groundTiles: Tile[][],
+    private worldManager: WorldManager
   ) {}
 
   toggleBuildItem(item: BuildItem) {
@@ -49,9 +46,8 @@ export class BuildItemBehaviour {
     switch (item) {
       case BuildItem.Path:
         this.currentPlacer = new PathTilePlacer(
-          this.scene,
           this.assetManager,
-          this.groundTiles,
+          this.worldManager
         );
         break;
       case BuildItem.Fence:
@@ -77,26 +73,11 @@ export class BuildItemBehaviour {
     document.body.style.cursor = "";
     this.renderPipeline.canvas.removeEventListener(
       "mousemove",
-      this.onMouseMove,
+      this.onMouseMove
     );
     this.renderPipeline.canvas.removeEventListener("click", this.onMouseClick);
     this.renderPipeline.clearOutlines();
     eventUpdater.fire("build-item");
-  }
-
-  private getIntersectedTile(event: MouseEvent) {
-    setNdc(event, this.ndc);
-    this.raycaster.setFromCamera(this.ndc, this.camera);
-
-    for (const row of this.groundTiles) {
-      for (const tile of row) {
-        const intersections = this.raycaster.intersectObject(tile, false);
-
-        if (intersections.length) {
-          return tile;
-        }
-      }
-    }
   }
 
   private onMouseMove = (event: MouseEvent) => {
@@ -104,7 +85,7 @@ export class BuildItemBehaviour {
 
     this.renderPipeline.clearOutlines();
 
-    const hitTile = this.getIntersectedTile(event);
+    const hitTile = this.worldManager.getIntersectedTile(event);
     if (!hitTile) return;
 
     // todo - change outline blur colour if invalid?
@@ -118,16 +99,11 @@ export class BuildItemBehaviour {
   private onMouseClick = (event: MouseEvent) => {
     if (!this.currentPlacer) return;
 
-    const hitTile = this.getIntersectedTile(event);
+    const hitTile = this.worldManager.getIntersectedTile(event);
     if (!hitTile) return;
 
     if (this.currentPlacer.isTileValid(hitTile)) {
       this.currentPlacer.onPlace(hitTile);
     }
   };
-}
-
-function setNdc(event: MouseEvent, target: THREE.Vector2) {
-  target.x = (event.clientX / window.innerWidth) * 2 - 1;
-  target.y = -(event.clientY / window.innerHeight) * 2 + 1;
 }
