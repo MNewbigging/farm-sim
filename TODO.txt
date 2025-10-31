@@ -1,7 +1,10 @@
 - delete built item
 - merge fence geometry
-- don't highlight props on tile when placing, just the tile plane
+
+
+- don't highlight props on tile when placing, just the tile plane - might need a separate 'highlight' or reticle object instead
 
 
 
 - RTS camera controller 
+- day/night cycle (pass light dir into grass/path shaders)

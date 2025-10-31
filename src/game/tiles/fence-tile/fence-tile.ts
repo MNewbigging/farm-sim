@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils";
 import { GrassWithLeavesTile } from "../grass-tile/grass-tile";
 import { AssetManager, ModelAsset, TextureAsset } from "../../asset-manager";
 
@@ -91,6 +92,9 @@ export function makeFenceProp(assetManager: AssetManager) {
   rightPole.position.x += 0.5;
 
   group.add(fence, leftPole, rightPole);
+
+  // Need to consult docs but they aren't loading right now!
+  //mergeGeometries()
 
   // todo merge these geometries together or be smart about pole placement?
   return group;
