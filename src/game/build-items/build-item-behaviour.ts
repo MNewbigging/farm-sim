@@ -51,7 +51,11 @@ export class BuildItemBehaviour {
         );
         break;
       case BuildItem.Fence:
-        this.currentPlacer = new FencePlacer(this.scene, this.assetManager);
+        this.currentPlacer = new FencePlacer(
+          this.scene,
+          this.assetManager,
+          this.worldManager
+        );
         break;
     }
 

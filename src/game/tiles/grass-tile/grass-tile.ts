@@ -8,7 +8,7 @@ export class GrassWithLeavesTile extends Tile {
   constructor(
     public readonly rowIndex: number,
     public readonly colIndex: number,
-    assetManager: AssetManager
+    protected assetManager: AssetManager
   ) {
     const textureA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
     const textureB = assetManager.textures.get(
