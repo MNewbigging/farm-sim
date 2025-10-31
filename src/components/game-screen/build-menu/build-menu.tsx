@@ -11,7 +11,7 @@ interface BuildMenuProps {
 }
 
 export function BuildMenu({ gameState }: BuildMenuProps) {
-  useEventUpdater("mode-changed");
+  useEventUpdater("mode-changed", "build-item");
   const { buildTileMode } = gameState;
 
   const visClass = buildTileMode.enabled ? "show" : "hide";
