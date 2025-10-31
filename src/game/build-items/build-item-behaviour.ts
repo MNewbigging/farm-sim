@@ -92,11 +92,17 @@ export class BuildItemBehaviour {
     const hitTile = this.worldManager.getIntersectedTile(event);
     if (!hitTile) return;
 
-    // todo - change outline blur colour if invalid?
-    if (this.currentPlacer?.isTileValid(hitTile)) {
-      this.renderPipeline.outlineObject(hitTile);
+    // Ensure outline colour is set
+    if (!this.currentPlacer.isTileValid(hitTile)) {
+      this.renderPipeline.changeOutlineColour("red");
+    } else {
+      this.renderPipeline.changeOutlineColour("white");
     }
 
+    // Outline
+    this.renderPipeline.outlineObject(hitTile);
+
+    // Optional hover logic
     this.currentPlacer?.onHoverTile?.(hitTile);
   };
 

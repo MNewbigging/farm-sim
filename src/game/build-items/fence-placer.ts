@@ -34,7 +34,13 @@ export class FencePlacer implements BuildItemPlacer {
   }
 
   isTileValid(tile: Tile) {
-    return tile instanceof GrassWithLeavesTile;
+    if (tile instanceof GrassWithLeavesTile) return true;
+
+    if (tile instanceof FenceTile) {
+      return tile.canAddFenceAtEdge(this.fenceEdge);
+    }
+
+    return false;
   }
 
   onHoverTile(tile: Tile) {

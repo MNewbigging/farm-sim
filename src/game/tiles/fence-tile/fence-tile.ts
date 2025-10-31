@@ -32,6 +32,8 @@ export function nextTileEdge(curEdge: TileEdge) {
 }
 
 export class FenceTile extends GrassWithLeavesTile {
+  private fencedEdges: TileEdge[] = [];
+
   constructor(
     public readonly rowIndex: number,
     public readonly colIndex: number,
@@ -47,6 +49,11 @@ export class FenceTile extends GrassWithLeavesTile {
     }
 
     this.add(fence);
+    this.fencedEdges.push(edge);
+  }
+
+  canAddFenceAtEdge(edge: TileEdge) {
+    return !this.fencedEdges.includes(edge);
   }
 }
 

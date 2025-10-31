@@ -12,7 +12,7 @@ export class RenderPipeline {
 
   constructor(
     private scene: THREE.Scene,
-    private camera: THREE.PerspectiveCamera,
+    private camera: THREE.PerspectiveCamera
   ) {
     // Setup renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -41,7 +41,7 @@ export class RenderPipeline {
     this.outlinePass = new OutlinePass(
       new THREE.Vector2(this.canvas.clientWidth, this.canvas.clientHeight),
       scene,
-      camera,
+      camera
     );
     this.outlinePass.edgeStrength = 10;
     this.outlinePass.edgeThickness = 0.25;
@@ -60,6 +60,10 @@ export class RenderPipeline {
     this.effectComposer.render(dt);
   }
 
+  changeOutlineColour(colour: THREE.ColorRepresentation) {
+    this.outlinePass.visibleEdgeColor.set(colour);
+  }
+
   outlineObject(object: THREE.Object3D) {
     this.outlinePass.selectedObjects.push(object);
   }
@@ -72,7 +76,7 @@ export class RenderPipeline {
     this.renderer.setSize(
       this.canvas.clientWidth,
       this.canvas.clientHeight,
-      false,
+      false
     );
 
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
