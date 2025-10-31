@@ -1,9 +1,10 @@
-import * as THREE from "three";
 import { AssetManager } from "../asset-manager";
 import { PathTile } from "../tiles/path-tile/path-tile";
 import { Tile } from "../tiles/tile";
 import { BuildItemPlacer } from "./build-item-behaviour";
 import { WorldManager } from "../world-manager";
+import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
+import { FenceTile } from "../tiles/fence-tile/fence-tile";
 
 export class PathTilePlacer implements BuildItemPlacer {
   constructor(
@@ -12,19 +13,21 @@ export class PathTilePlacer implements BuildItemPlacer {
   ) {}
 
   isTileValid(tile: Tile) {
-    return true;
+    // Fences extend grass tiles so check for that first
+    if (tile instanceof FenceTile) return false;
+
+    return tile instanceof GrassWithLeavesTile;
   }
 
   onPlace(tile: Tile) {
-    // Don't replace path with path
-    if (tile instanceof PathTile) return;
-
     // Remove this tile and replace with path tile
     const path = new PathTile(tile.rowIndex, tile.colIndex, this.assetManager);
 
     this.worldManager.replaceTile(path);
 
     this.updatePathConnections(path);
+
+    return path;
   }
 
   private updatePathConnections(pathTile: PathTile) {

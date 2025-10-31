@@ -15,7 +15,7 @@ export enum BuildItem {
 export interface BuildItemPlacer {
   isTileValid: (tile: Tile) => boolean;
   onHoverTile?: (tile: Tile) => void;
-  onPlace: (tile: Tile) => void;
+  onPlace: (tile: Tile) => Tile; // passes current tile, expects new replacement tile
   onStop?: () => void;
 }
 
@@ -23,6 +23,7 @@ export class BuildItemBehaviour {
   placingBuildItem?: BuildItem;
 
   private currentPlacer?: BuildItemPlacer;
+  private lastTile?: Tile;
 
   constructor(
     private scene: THREE.Scene,
@@ -54,7 +55,8 @@ export class BuildItemBehaviour {
         this.currentPlacer = new FencePlacer(
           this.scene,
           this.assetManager,
-          this.worldManager
+          this.worldManager,
+          this.outlineLastTile
         );
         break;
     }
@@ -87,33 +89,42 @@ export class BuildItemBehaviour {
   private onMouseMove = (event: MouseEvent) => {
     if (!this.currentPlacer) return;
 
-    this.renderPipeline.clearOutlines();
-
     const hitTile = this.worldManager.getIntersectedTile(event);
     if (!hitTile) return;
 
+    this.lastTile = hitTile;
+
+    this.outlineLastTile();
+
+    // Optional hover logic
+    this.currentPlacer?.onHoverTile?.(hitTile);
+  };
+
+  private onMouseClick = () => {
+    if (!this.lastTile) return; // uses tile set on mouse move
+    if (!this.currentPlacer) return;
+
+    if (this.currentPlacer.isTileValid(this.lastTile)) {
+      const newTile = this.currentPlacer.onPlace(this.lastTile);
+      this.lastTile = newTile;
+      this.outlineLastTile();
+    }
+  };
+
+  private outlineLastTile = () => {
+    if (!this.lastTile) return;
+    if (!this.currentPlacer) return;
+
+    this.renderPipeline.clearOutlines();
+
     // Ensure outline colour is set
-    if (!this.currentPlacer.isTileValid(hitTile)) {
+    if (!this.currentPlacer.isTileValid(this.lastTile)) {
       this.renderPipeline.changeOutlineColour("red");
     } else {
       this.renderPipeline.changeOutlineColour("white");
     }
 
     // Outline
-    this.renderPipeline.outlineObject(hitTile);
-
-    // Optional hover logic
-    this.currentPlacer?.onHoverTile?.(hitTile);
-  };
-
-  private onMouseClick = (event: MouseEvent) => {
-    if (!this.currentPlacer) return;
-
-    const hitTile = this.worldManager.getIntersectedTile(event);
-    if (!hitTile) return;
-
-    if (this.currentPlacer.isTileValid(hitTile)) {
-      this.currentPlacer.onPlace(hitTile);
-    }
+    this.renderPipeline.outlineObject(this.lastTile);
   };
 }

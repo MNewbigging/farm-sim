@@ -43,17 +43,29 @@ export class FenceTile extends GrassWithLeavesTile {
     super(rowIndex, colIndex, assetManager);
 
     // Build and rotate fence to face correct edge
-    const fence = makeFenceProp(assetManager);
-    for (let i = 0; i < edge; i++) {
-      fence.rotateY(-Math.PI / 2);
-    }
-
+    const fence = this.buildFenceFacingEdge(edge);
     this.add(fence);
     this.fencedEdges.push(edge);
   }
 
   canAddFenceAtEdge(edge: TileEdge) {
     return !this.fencedEdges.includes(edge);
+  }
+
+  addFenceAtEdge(edge: TileEdge) {
+    if (!this.canAddFenceAtEdge(edge)) return;
+
+    const fence = this.buildFenceFacingEdge(edge);
+    this.add(fence);
+    this.fencedEdges.push(edge);
+  }
+
+  private buildFenceFacingEdge(edge: TileEdge) {
+    const fence = makeFenceProp(this.assetManager);
+    for (let i = 0; i < edge; i++) {
+      fence.rotateY(-Math.PI / 2);
+    }
+    return fence;
   }
 }
 

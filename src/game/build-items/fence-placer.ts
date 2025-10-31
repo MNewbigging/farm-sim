@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { keyboardListener } from "../../listeners/keyboard-listener";
-import { AssetManager, ModelAsset, TextureAsset } from "../asset-manager";
+import { AssetManager } from "../asset-manager";
 import { Tile } from "../tiles/tile";
 import { BuildItemPlacer } from "./build-item-behaviour";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
@@ -19,7 +19,8 @@ export class FencePlacer implements BuildItemPlacer {
   constructor(
     private scene: THREE.Scene,
     private assetManager: AssetManager,
-    private worldManager: WorldManager
+    private worldManager: WorldManager,
+    private reOutline: () => void
   ) {
     this.displayFence = makeFenceProp(assetManager);
     this.displayFence.visible = false;
@@ -34,11 +35,12 @@ export class FencePlacer implements BuildItemPlacer {
   }
 
   isTileValid(tile: Tile) {
-    if (tile instanceof GrassWithLeavesTile) return true;
-
+    // Fences extend grass tiles so check for those first
     if (tile instanceof FenceTile) {
       return tile.canAddFenceAtEdge(this.fenceEdge);
     }
+
+    if (tile instanceof GrassWithLeavesTile) return true;
 
     return false;
   }
@@ -52,10 +54,11 @@ export class FencePlacer implements BuildItemPlacer {
   onPlace(tile: Tile) {
     // If the tile is already a fence tile, place additional fence
     if (tile instanceof FenceTile) {
-      //...
-      return;
+      tile.addFenceAtEdge(this.fenceEdge);
+      return tile;
     }
 
+    // Otherwise replace the current tile with a fence tile
     const fenceTile = new FenceTile(
       tile.rowIndex,
       tile.colIndex,
@@ -63,10 +66,12 @@ export class FencePlacer implements BuildItemPlacer {
       this.fenceEdge
     );
     this.worldManager.replaceTile(fenceTile);
+    return fenceTile;
   }
 
   private onRotate = () => {
     this.displayFence.rotateY(-Math.PI / 2);
     this.fenceEdge = nextTileEdge(this.fenceEdge);
+    this.reOutline();
   };
 }
