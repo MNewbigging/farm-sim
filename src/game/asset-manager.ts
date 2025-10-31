@@ -19,8 +19,11 @@ export enum TextureAsset {
   BANDIT = "bandit-texture.png",
   HDR = "orchard_cartoony.hdr",
   GrassDiffuse = "grass/Grass_Texture_01.png",
+  GrassNormal = "grass/Ground_Normals_01.png",
   GrassLeavesDiffuse = "grass-leaves/Grass_Leaves_Texture_01.png",
+  GrassLeavesNormal = "grass-leaves/Ground_Leaves_Normals_01.png",
   FootpathDiffuse = "footpath/Footpath_Tiles_Texture_01.png",
+  FootpathNormal = "footpath/Footpath_Tiles_Normals_01.png",
   Farm = "PolygonFarm_Texture_01_A.png",
 }
 
@@ -111,12 +114,24 @@ export class AssetManager {
       (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
     );
     this.loadTexture(
+      TextureAsset.GrassNormal,
+      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace),
+    );
+    this.loadTexture(
       TextureAsset.GrassLeavesDiffuse,
       (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
     );
     this.loadTexture(
+      TextureAsset.GrassLeavesNormal,
+      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace),
+    );
+    this.loadTexture(
       TextureAsset.FootpathDiffuse,
       (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+    );
+    this.loadTexture(
+      TextureAsset.FootpathNormal,
+      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace),
     );
 
     this.loadTexture(

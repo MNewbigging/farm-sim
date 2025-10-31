@@ -10,12 +10,17 @@ export class GrassWithLeavesTile extends Tile {
     public readonly colIndex: number,
     protected assetManager: AssetManager
   ) {
-    const textureA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
-    const textureB = assetManager.textures.get(
+    const diffuseA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
+    const normalA = assetManager.textures.get(TextureAsset.GrassNormal)!;
+    const diffuseB = assetManager.textures.get(
       TextureAsset.GrassLeavesDiffuse
     )!;
+    const normalB = assetManager.textures.get(TextureAsset.GrassLeavesNormal)!;
 
-    const material = new TextureBlendMaterial(textureA, textureB);
+    const material = new TextureBlendMaterial({
+      textureA: { diffuse: diffuseA, normal: normalA },
+      textureB: { diffuse: diffuseB, normal: normalB },
+    });
     const geometry = new THREE.PlaneGeometry().rotateX(-Math.PI / 2);
 
     super(geometry, material);
@@ -27,25 +32,46 @@ export class GrassWithLeavesTile extends Tile {
   }
 }
 
-class TextureBlendMaterial extends THREE.ShaderMaterial {
-  readonly tDiffuseA: THREE.IUniform<THREE.Texture | null>;
-  readonly tDiffuseB: THREE.IUniform<THREE.Texture | null>;
+export interface Material {
+  diffuse: THREE.Texture;
+  normal: THREE.Texture;
+}
 
-  constructor(textureA: THREE.Texture, textureB: THREE.Texture) {
-    const tDiffuseA = { value: textureA };
-    const tDiffuseB = { value: textureB };
+export interface BlendMaterialParameters {
+  textureA: Material;
+  textureB: Material;
+}
+
+class TextureBlendMaterial extends THREE.ShaderMaterial {
+  readonly materialA: THREE.IUniform<Material>;
+  readonly materialB: THREE.IUniform<Material>;
+
+  constructor(params: BlendMaterialParameters) {
+    const materialA = {
+      value: {
+        diffuse: params.textureA.diffuse,
+        normal: params.textureA.normal,
+      },
+    };
+
+    const materialB = {
+      value: {
+        diffuse: params.textureB.diffuse,
+        normal: params.textureB.normal,
+      },
+    };
 
     super({
       glslVersion: THREE.GLSL3,
       vertexShader: grassTileVS,
       fragmentShader: grassTileFS,
       uniforms: {
-        tDiffuseA,
-        tDiffuseB,
+        materialA,
+        materialB,
       },
     });
 
-    this.tDiffuseA = tDiffuseA;
-    this.tDiffuseB = tDiffuseB;
+    this.materialA = materialA;
+    this.materialB = materialB;
   }
 }

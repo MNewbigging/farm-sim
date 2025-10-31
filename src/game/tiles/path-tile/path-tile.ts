@@ -3,6 +3,7 @@ import { Tile } from "../tile";
 import pathTileVS from "./path-tile.vs";
 import pathTileFS from "./path-tile.fs";
 import { AssetManager, TextureAsset } from "../../asset-manager";
+import { BlendMaterialParameters, Material } from "../grass-tile/grass-tile";
 
 export class PathTile extends Tile {
   private readonly vertices: number;
@@ -12,10 +13,15 @@ export class PathTile extends Tile {
     public readonly colIndex: number,
     assetManager: AssetManager,
   ) {
-    const textureA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
-    const textureB = assetManager.textures.get(TextureAsset.FootpathDiffuse)!;
+    const diffuseA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
+    const normalA = assetManager.textures.get(TextureAsset.GrassNormal)!;
+    const diffuseB = assetManager.textures.get(TextureAsset.FootpathDiffuse)!;
+    const normalB = assetManager.textures.get(TextureAsset.FootpathNormal)!;
 
-    const material = new PathTileMaterial(textureA, textureB);
+    const material = new PathTileMaterial({
+      textureA: { diffuse: diffuseA, normal: normalA },
+      textureB: { diffuse: diffuseB, normal: normalB },
+    });
 
     // Create custom path tile geometry
     const divisions = 4;
@@ -136,25 +142,36 @@ export class PathTile extends Tile {
 }
 
 class PathTileMaterial extends THREE.ShaderMaterial {
-  readonly tDiffuseA: THREE.IUniform<THREE.Texture | null>;
-  readonly tDiffuseB: THREE.IUniform<THREE.Texture | null>;
+  readonly materialA: THREE.IUniform<Material>;
+  readonly materialB: THREE.IUniform<Material>;
 
-  constructor(textureA: THREE.Texture, textureB: THREE.Texture) {
-    const tDiffuseA = { value: textureA };
-    const tDiffuseB = { value: textureB };
+  constructor(params: BlendMaterialParameters) {
+    const materialA = {
+      value: {
+        diffuse: params.textureA.diffuse,
+        normal: params.textureA.normal,
+      },
+    };
+
+    const materialB = {
+      value: {
+        diffuse: params.textureB.diffuse,
+        normal: params.textureB.normal,
+      },
+    };
 
     super({
       glslVersion: THREE.GLSL3,
       vertexShader: pathTileVS,
       fragmentShader: pathTileFS,
       uniforms: {
-        tDiffuseA,
-        tDiffuseB,
+        materialA,
+        materialB,
       },
       // wireframe: true,
     });
 
-    this.tDiffuseA = tDiffuseA;
-    this.tDiffuseB = tDiffuseB;
+    this.materialA = materialA;
+    this.materialB = materialB;
   }
 }
