@@ -98,7 +98,7 @@ export class GameState {
 
     this.time = (this.time + dt) % this.dayLength;
     const timeNormalized = this.time / this.dayLength;
-    setSunPosition(timeNormalized, this.sun, this.sunHelper);
+    setSunPosition(0.2, this.sun, this.sunHelper);
     this.worldManager.updateSunUniforms(this.sun);
 
     this.renderPipeline.render(dt);

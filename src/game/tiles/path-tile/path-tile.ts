@@ -162,6 +162,7 @@ class PathTileMaterial extends THREE.ShaderMaterial {
       uniforms: {
         materialA,
         materialB,
+        sunDirection_W: { value: new THREE.Vector3() },
       },
       // wireframe: true,
     });
