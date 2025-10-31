@@ -63,74 +63,90 @@ export class PathTile extends Tile {
     (this.material as PathTileMaterial).dispose();
   }
 
-  connectUpLeft() {
+  setConnectUpLeft(connected: boolean) {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
-    pathAttrib.array[0] === 255;
+    const value = connected ? 255 : 0;
+
+    pathAttrib.array[0] === value;
 
     pathAttrib.needsUpdate = true;
   }
 
-  connectUp() {
+  setConnectUp(connected: boolean) {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
-    pathAttrib.array[1] = 255;
-    pathAttrib.array[2] = 255;
-    pathAttrib.array[3] = 255;
+    const value = connected ? 255 : 0;
+
+    pathAttrib.array[1] = value;
+    pathAttrib.array[2] = value;
+    pathAttrib.array[3] = value;
 
     pathAttrib.needsUpdate = true;
   }
 
-  connectUpRight() {
+  setConnectUpRight(connected: boolean) {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
-    pathAttrib.array[4] === 255;
+    const value = connected ? 255 : 0;
+
+    pathAttrib.array[4] === value;
 
     pathAttrib.needsUpdate = true;
   }
 
-  connectRight() {
+  setConnectRight(connected: boolean) {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
-    pathAttrib.array[9] = 255;
-    pathAttrib.array[14] = 255;
-    pathAttrib.array[19] = 255;
+    const value = connected ? 255 : 0;
+
+    pathAttrib.array[9] = value;
+    pathAttrib.array[14] = value;
+    pathAttrib.array[19] = value;
 
     pathAttrib.needsUpdate = true;
   }
 
-  connectDownRight() {
+  setConnectDownRight(connected: boolean) {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
-    pathAttrib.array[24] === 255;
+    const value = connected ? 255 : 0;
+
+    pathAttrib.array[24] === value;
 
     pathAttrib.needsUpdate = true;
   }
 
-  connectDown() {
+  setConnectDown(connected: boolean) {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
-    pathAttrib.array[21] = 255;
-    pathAttrib.array[22] = 255;
-    pathAttrib.array[23] = 255;
+    const value = connected ? 255 : 0;
+
+    pathAttrib.array[21] = value;
+    pathAttrib.array[22] = value;
+    pathAttrib.array[23] = value;
 
     pathAttrib.needsUpdate = true;
   }
 
-  connectDownLeft() {
+  setConnectDownLeft(connected: boolean) {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
-    pathAttrib.array[20] === 255;
+    const value = connected ? 255 : 0;
+
+    pathAttrib.array[20] === value;
 
     pathAttrib.needsUpdate = true;
   }
 
-  connectLeft() {
+  setConnectLeft(connected: boolean) {
     const pathAttrib = this.geometry.getAttribute("pathAttribute");
 
-    pathAttrib.array[5] = 255;
-    pathAttrib.array[10] = 255;
-    pathAttrib.array[15] = 255;
+    const value = connected ? 255 : 0;
+
+    pathAttrib.array[5] = value;
+    pathAttrib.array[10] = value;
+    pathAttrib.array[15] = value;
 
     pathAttrib.needsUpdate = true;
   }

@@ -35,43 +35,43 @@ export class PathTilePlacer implements BuildTilePlacer {
       this.worldManager.getTileNeighbours(pathTile);
 
     if (upLeft instanceof PathTile) {
-      upLeft.connectDownRight();
-      pathTile.connectUpLeft();
+      upLeft.setConnectDownRight(true);
+      pathTile.setConnectUpLeft(true);
     }
 
     if (up instanceof PathTile) {
-      up.connectDown();
-      pathTile.connectUp();
+      up.setConnectDown(true);
+      pathTile.setConnectUp(true);
     }
 
     if (upRight instanceof PathTile) {
-      upRight.connectDownLeft();
-      pathTile.connectUpRight();
+      upRight.setConnectDownLeft(true);
+      pathTile.setConnectUpRight(true);
     }
 
     if (right instanceof PathTile) {
-      right.connectLeft();
-      pathTile.connectRight();
+      right.setConnectLeft(true);
+      pathTile.setConnectRight(true);
     }
 
     if (downRight instanceof PathTile) {
-      downRight.connectUpLeft();
-      pathTile.connectDownRight();
+      downRight.setConnectUpLeft(true);
+      pathTile.setConnectDownRight(true);
     }
 
     if (down instanceof PathTile) {
-      down.connectUp();
-      pathTile.connectDown();
+      down.setConnectUp(true);
+      pathTile.setConnectDown(true);
     }
 
     if (downLeft instanceof PathTile) {
-      downLeft.connectUpRight();
-      pathTile.connectDownLeft();
+      downLeft.setConnectUpRight(true);
+      pathTile.setConnectDownLeft(true);
     }
 
     if (left instanceof PathTile) {
-      left.connectRight();
-      pathTile.connectLeft();
+      left.setConnectRight(true);
+      pathTile.setConnectLeft(true);
     }
   }
 }

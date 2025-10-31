@@ -94,7 +94,48 @@ export class DemolishMode implements Mode {
     this.worldManager.replaceTile(grass);
   }
 
-  private updatePathConnections(tile: PathTile) {
-    //
+  private updatePathConnections(pathTile: PathTile) {
+    const { upLeft, up, upRight, right, downRight, down, downLeft, left } =
+      this.worldManager.getTileNeighbours(pathTile);
+
+    if (upLeft instanceof PathTile) {
+      upLeft.setConnectDownRight(false);
+      pathTile.setConnectUpLeft(false);
+    }
+
+    if (up instanceof PathTile) {
+      up.setConnectDown(false);
+      pathTile.setConnectUp(false);
+    }
+
+    if (upRight instanceof PathTile) {
+      upRight.setConnectDownLeft(false);
+      pathTile.setConnectUpRight(false);
+    }
+
+    if (right instanceof PathTile) {
+      right.setConnectLeft(false);
+      pathTile.setConnectRight(false);
+    }
+
+    if (downRight instanceof PathTile) {
+      downRight.setConnectUpLeft(false);
+      pathTile.setConnectDownRight(false);
+    }
+
+    if (down instanceof PathTile) {
+      down.setConnectUp(false);
+      pathTile.setConnectDown(false);
+    }
+
+    if (downLeft instanceof PathTile) {
+      downLeft.setConnectUpRight(false);
+      pathTile.setConnectDownLeft(false);
+    }
+
+    if (left instanceof PathTile) {
+      left.setConnectRight(false);
+      pathTile.setConnectLeft(false);
+    }
   }
 }

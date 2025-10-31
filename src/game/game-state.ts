@@ -1,9 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
-import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
-import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
-import { Tile } from "./tiles/tile";
+import { AssetManager, TextureAsset } from "./asset-manager";
 import { BuildTileMode } from "./build-tiles/build-tile-mode";
 import { WorldManager } from "./world-manager";
 import { ModeManager } from "./mode-manager";
