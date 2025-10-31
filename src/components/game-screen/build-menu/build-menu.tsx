@@ -1,8 +1,8 @@
 import { appState } from "../../../app-state/app-state";
 import {
-  BuildItem,
-  BuildItemBehaviour,
-} from "../../../game/build-items/build-item-behaviour";
+  BuildTile,
+  BuildTileBehaviour,
+} from "../../../game/build-tiles/build-tile-behaviour";
 import { GameState } from "../../../game/game-state";
 import { useEventUpdater } from "../../hooks/use-event-updater";
 import "./build-menu.scss";
@@ -18,7 +18,7 @@ export function BuildMenu({ gameState }: BuildMenuProps) {
   const classes = ["build-menu", visClass].join(" ");
 
   const { buildItemBehaviour } = gameState;
-  const options = Object.values(BuildItem).map((item) => (
+  const options = Object.values(BuildTile).map((item) => (
     <BuildItemOption
       key={`build-option-${item}`}
       buildItemBehaviour={buildItemBehaviour}
@@ -30,8 +30,8 @@ export function BuildMenu({ gameState }: BuildMenuProps) {
 }
 
 interface BuildItemOptionProps {
-  buildItemBehaviour: BuildItemBehaviour;
-  item: BuildItem;
+  buildItemBehaviour: BuildTileBehaviour;
+  item: BuildTile;
 }
 
 function BuildItemOption({ buildItemBehaviour, item }: BuildItemOptionProps) {

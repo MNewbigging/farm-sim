@@ -7,22 +7,22 @@ import { FencePlacer } from "./fence-placer";
 import { PathTilePlacer } from "./path-tile-placer";
 import { WorldManager } from "../world-manager";
 
-export enum BuildItem {
+export enum BuildTile {
   Path = "Path",
   Fence = "Fence",
 }
 
-export interface BuildItemPlacer {
+export interface BuildTilePlacer {
   isTileValid: (tile: Tile) => boolean;
   onHoverTile?: (tile: Tile) => void;
   onPlace: (tile: Tile) => Tile; // passes current tile, expects new replacement tile
   onStop?: () => void;
 }
 
-export class BuildItemBehaviour {
-  placingBuildItem?: BuildItem;
+export class BuildTileBehaviour {
+  placingBuildItem?: BuildTile;
 
-  private currentPlacer?: BuildItemPlacer;
+  private currentPlacer?: BuildTilePlacer;
   private lastTile?: Tile;
 
   constructor(
@@ -32,7 +32,7 @@ export class BuildItemBehaviour {
     private worldManager: WorldManager
   ) {}
 
-  toggleBuildItem(item: BuildItem) {
+  toggleBuildItem(item: BuildTile) {
     if (this.placingBuildItem === item) {
       this.stopPlacingBuildItem();
       return; // this is the toggle part
@@ -45,13 +45,13 @@ export class BuildItemBehaviour {
     this.placingBuildItem = item;
 
     switch (item) {
-      case BuildItem.Path:
+      case BuildTile.Path:
         this.currentPlacer = new PathTilePlacer(
           this.assetManager,
           this.worldManager
         );
         break;
-      case BuildItem.Fence:
+      case BuildTile.Fence:
         this.currentPlacer = new FencePlacer(
           this.scene,
           this.assetManager,

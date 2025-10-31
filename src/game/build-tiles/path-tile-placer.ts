@@ -1,12 +1,12 @@
 import { AssetManager } from "../asset-manager";
 import { PathTile } from "../tiles/path-tile/path-tile";
 import { Tile } from "../tiles/tile";
-import { BuildItemPlacer } from "./build-item-behaviour";
+import { BuildTilePlacer } from "./build-tile-behaviour";
 import { WorldManager } from "../world-manager";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import { FenceTile } from "../tiles/fence-tile/fence-tile";
 
-export class PathTilePlacer implements BuildItemPlacer {
+export class PathTilePlacer implements BuildTilePlacer {
   constructor(
     private assetManager: AssetManager,
     private worldManager: WorldManager

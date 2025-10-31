@@ -4,11 +4,11 @@ import { RenderPipeline } from "./render-pipeline";
 import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile } from "./tiles/tile";
-import { BuildItemBehaviour } from "./build-items/build-item-behaviour";
+import { BuildTileBehaviour } from "./build-tiles/build-tile-behaviour";
 import { WorldManager } from "./world-manager";
 
 export class GameState {
-  buildItemBehaviour: BuildItemBehaviour;
+  buildItemBehaviour: BuildTileBehaviour;
 
   private renderPipeline: RenderPipeline;
   private clock = new THREE.Clock();
@@ -39,7 +39,7 @@ export class GameState {
       this.assetManager
     );
 
-    this.buildItemBehaviour = new BuildItemBehaviour(
+    this.buildItemBehaviour = new BuildTileBehaviour(
       this.scene,
       this.renderPipeline,
       this.assetManager,

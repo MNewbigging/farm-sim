@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { keyboardListener } from "../../listeners/keyboard-listener";
 import { AssetManager } from "../asset-manager";
 import { Tile } from "../tiles/tile";
-import { BuildItemPlacer } from "./build-item-behaviour";
+import { BuildTilePlacer } from "./build-tile-behaviour";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import {
   FenceTile,
@@ -12,7 +12,7 @@ import {
 } from "../tiles/fence-tile/fence-tile";
 import { WorldManager } from "../world-manager";
 
-export class FencePlacer implements BuildItemPlacer {
+export class FencePlacer implements BuildTilePlacer {
   private displayFence: THREE.Group;
   private fenceEdge: TileEdge = TileEdge.Down; // starts this way by default
 

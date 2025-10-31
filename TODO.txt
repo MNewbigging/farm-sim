@@ -1,7 +1,7 @@
 - delete built item
 - merge fence geometry
+- don't highlight props on tile when placing, just the tile plane
 
-- limit fence to one per unoccupied tile?
 
-- change outline colour to red when placement is invalid
-- RTS camera controller
+
+- RTS camera controller 
