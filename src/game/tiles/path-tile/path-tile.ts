@@ -11,7 +11,7 @@ export class PathTile extends Tile {
   constructor(
     public readonly rowIndex: number,
     public readonly colIndex: number,
-    assetManager: AssetManager,
+    assetManager: AssetManager
   ) {
     const diffuseA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
     const normalA = assetManager.textures.get(TextureAsset.GrassNormal)!;
@@ -30,7 +30,7 @@ export class PathTile extends Tile {
       1,
       1,
       divisions,
-      divisions,
+      divisions
     ).rotateX(-Math.PI / 2);
 
     // Create custom attribute for shader to use
@@ -49,6 +49,9 @@ export class PathTile extends Tile {
 
     const pathAttrib = new THREE.Uint8BufferAttribute(pathVertexArray, 1, true);
     geometry.setAttribute("pathAttribute", pathAttrib);
+
+    geometry.computeVertexNormals();
+    geometry.computeTangents();
 
     super(geometry, material);
 

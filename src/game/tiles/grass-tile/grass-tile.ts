@@ -23,6 +23,9 @@ export class GrassWithLeavesTile extends Tile {
     });
     const geometry = new THREE.PlaneGeometry().rotateX(-Math.PI / 2);
 
+    geometry.computeVertexNormals();
+    geometry.computeTangents();
+
     super(geometry, material);
   }
 
@@ -69,6 +72,7 @@ class TextureBlendMaterial extends THREE.ShaderMaterial {
         materialA,
         materialB,
       },
+      // wireframe: true,
     });
 
     this.materialA = materialA;

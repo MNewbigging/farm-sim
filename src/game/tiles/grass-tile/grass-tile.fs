@@ -9,6 +9,9 @@ uniform Material materialB;
 in vec2 vUv;
 in vec4 vWorldPosition;
 
+in mat3 TBN;
+flat in vec3 vSunDirection;
+
 layout(location = 0) out vec4 pc_fragColor;
 
 //	Classic Perlin 2D Noise
@@ -40,7 +43,7 @@ float cnoise(vec2 P) {
   vec2 g01 = vec2(gx.z, gy.z);
   vec2 g11 = vec2(gx.w, gy.w);
   vec4 norm = 1.79284291400159 - 0.85373472095314 *
-        vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11));
+    vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11));
   g00 *= norm.x;
   g01 *= norm.y;
   g10 *= norm.z;
@@ -61,15 +64,14 @@ void main() {
   vec4 texelA = texture(materialA.diffuse, vUv);
   vec4 texelB = texture(materialB.diffuse, vUv);
 
-  vec3 normalA = texture(materialA.normal, vUv).xzy * 2.0 - 1.0; // temp swizzle and unpack
-  vec3 normalB = texture(materialB.normal, vUv).xzy * 2.0 - 1.0; // temp swizzle and unpack
+  vec3 normalA = texture(materialA.normal, vUv).xyz * 2.0 - 1.0;
+  vec3 normalB = texture(materialB.normal, vUv).xyz * 2.0 - 1.0;
 
   vec4 color = mix(texelA, texelB, noise);
-  vec3 normal = mix(normalA, normalB, noise);
+  vec3 normal = normalize(TBN * mix(normalA, normalB, noise));
 
   // temp lighting
-  vec3 sunDir_W = normalize(vec3(1.0, 0.5, 1.0));
-  float dotP = dot(normal, sunDir_W);
+  float dotP = dot(normal, vSunDirection);
   dotP = clamp(dotP, 0.0, 1.0);
 
   color *= dotP;
