@@ -1,7 +1,7 @@
 import { AssetManager } from "../asset-manager";
 import { PathTile } from "../tiles/path-tile/path-tile";
 import { Tile } from "../tiles/tile";
-import { BuildTilePlacer } from "./build-tile-behaviour";
+import { BuildTilePlacer } from "./build-tile-mode";
 import { WorldManager } from "../world-manager";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import { FenceTile } from "../tiles/fence-tile/fence-tile";

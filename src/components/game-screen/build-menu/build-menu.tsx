@@ -1,8 +1,7 @@
-import { appState } from "../../../app-state/app-state";
 import {
   BuildTile,
-  BuildTileBehaviour,
-} from "../../../game/build-tiles/build-tile-behaviour";
+  BuildTileMode,
+} from "../../../game/build-tiles/build-tile-mode";
 import { GameState } from "../../../game/game-state";
 import { useEventUpdater } from "../../hooks/use-event-updater";
 import "./build-menu.scss";
@@ -12,16 +11,16 @@ interface BuildMenuProps {
 }
 
 export function BuildMenu({ gameState }: BuildMenuProps) {
-  useEventUpdater("toggled-build-menu", "build-item");
+  useEventUpdater("mode-changed");
+  const { buildTileMode } = gameState;
 
-  const visClass = appState.showBuildMenu ? "show" : "hide";
+  const visClass = buildTileMode.enabled ? "show" : "hide";
   const classes = ["build-menu", visClass].join(" ");
 
-  const { buildItemBehaviour } = gameState;
   const options = Object.values(BuildTile).map((item) => (
     <BuildItemOption
       key={`build-option-${item}`}
-      buildItemBehaviour={buildItemBehaviour}
+      buildTileMode={buildTileMode}
       item={item}
     />
   ));
@@ -30,19 +29,18 @@ export function BuildMenu({ gameState }: BuildMenuProps) {
 }
 
 interface BuildItemOptionProps {
-  buildItemBehaviour: BuildTileBehaviour;
+  buildTileMode: BuildTileMode;
   item: BuildTile;
 }
 
-function BuildItemOption({ buildItemBehaviour, item }: BuildItemOptionProps) {
-  const itemActive =
-    buildItemBehaviour.placingBuildItem === item ? "active" : "";
+function BuildItemOption({ buildTileMode, item }: BuildItemOptionProps) {
+  const itemActive = buildTileMode.placingBuildItem === item ? "active" : "";
   const itemClass = ["build-option", itemActive].join(" ");
 
   return (
     <div
       className={itemClass}
-      onClick={() => buildItemBehaviour.toggleBuildItem(item)}
+      onClick={() => buildTileMode.toggleBuildItem(item)}
     >
       {item}
     </div>

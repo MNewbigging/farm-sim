@@ -6,6 +6,7 @@ import { Tile } from "../tiles/tile";
 import { FencePlacer } from "./fence-placer";
 import { PathTilePlacer } from "./path-tile-placer";
 import { WorldManager } from "../world-manager";
+import { Mode, ModeName } from "../mode-manager";
 
 export enum BuildTile {
   Path = "Path",
@@ -19,8 +20,10 @@ export interface BuildTilePlacer {
   onStop?: () => void;
 }
 
-export class BuildTileBehaviour {
+export class BuildTileMode implements Mode {
+  name = ModeName.Build;
   placingBuildItem?: BuildTile;
+  enabled = false;
 
   private currentPlacer?: BuildTilePlacer;
   private lastTile?: Tile;
@@ -32,7 +35,23 @@ export class BuildTileBehaviour {
     private worldManager: WorldManager
   ) {}
 
+  enable() {
+    if (this.enabled) return;
+
+    this.enabled = true;
+  }
+
+  disable() {
+    if (!this.enabled) return;
+
+    this.stopPlacingBuildItem();
+
+    this.enabled = false;
+  }
+
   toggleBuildItem(item: BuildTile) {
+    if (!this.enabled) return;
+
     // Toggle off
     if (this.placingBuildItem === item) {
       this.stopPlacingBuildItem();
@@ -73,7 +92,7 @@ export class BuildTileBehaviour {
     eventUpdater.fire("build-item");
   }
 
-  stopPlacingBuildItem() {
+  private stopPlacingBuildItem() {
     if (!this.placingBuildItem) return;
 
     this.currentPlacer?.onStop?.();

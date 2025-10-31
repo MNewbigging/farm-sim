@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { keyboardListener } from "../../listeners/keyboard-listener";
 import { AssetManager } from "../asset-manager";
 import { Tile } from "../tiles/tile";
-import { BuildTilePlacer } from "./build-tile-behaviour";
+import { BuildTilePlacer } from "./build-tile-mode";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import {
   FenceTile,

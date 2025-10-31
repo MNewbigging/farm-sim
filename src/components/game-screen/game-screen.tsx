@@ -1,5 +1,5 @@
-import { appState } from "../../app-state/app-state";
 import { GameState } from "../../game/game-state";
+import { ModeName } from "../../game/mode-manager";
 import { useEventUpdater } from "../hooks/use-event-updater";
 import { BuildMenu } from "./build-menu/build-menu";
 import "./game-screen.scss";
@@ -9,12 +9,12 @@ interface GameScreenProps {
 }
 
 export function GameScreen({ gameState }: GameScreenProps) {
-  useEventUpdater("toggled-build-menu", "toggle-demolish");
+  useEventUpdater("mode-changed");
 
-  const buildActiveClass = appState.showBuildMenu ? "active" : "";
+  const buildActiveClass = gameState.buildTileMode.enabled ? "active" : "";
   const buildBtnClass = ["button", buildActiveClass].join(" ");
 
-  const demolishActiveClass = appState.demolishing ? "active" : "";
+  const demolishActiveClass = gameState.demolishMode.enabled ? "active" : "";
   const demolishBtnClass = ["button", demolishActiveClass].join(" ");
 
   return (
@@ -31,7 +31,7 @@ export function GameScreen({ gameState }: GameScreenProps) {
           <div
             className={buildBtnClass}
             data-tooltip="Build"
-            onClick={appState.toggleBuildMenu}
+            onClick={() => gameState.modeManager.toggleMode(ModeName.Build)}
           >
             B
           </div>
@@ -40,7 +40,7 @@ export function GameScreen({ gameState }: GameScreenProps) {
             className={demolishBtnClass}
             data-tooltip="Demolish"
             data-positionleft=""
-            onClick={appState.toggleDemolish}
+            onClick={() => gameState.modeManager.toggleMode(ModeName.Demolish)}
           >
             D
           </div>

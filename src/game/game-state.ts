@@ -4,11 +4,15 @@ import { RenderPipeline } from "./render-pipeline";
 import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
 import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile } from "./tiles/tile";
-import { BuildTileBehaviour } from "./build-tiles/build-tile-behaviour";
+import { BuildTileMode } from "./build-tiles/build-tile-mode";
 import { WorldManager } from "./world-manager";
+import { ModeManager } from "./mode-manager";
+import { DemolishMode } from "./demolish-mode";
 
 export class GameState {
-  buildItemBehaviour: BuildTileBehaviour;
+  modeManager: ModeManager;
+  buildTileMode: BuildTileMode;
+  demolishMode: DemolishMode;
 
   private renderPipeline: RenderPipeline;
   private clock = new THREE.Clock();
@@ -20,6 +24,7 @@ export class GameState {
   private worldManager: WorldManager;
 
   constructor(private assetManager: AssetManager) {
+    // Scene setup
     this.setupCamera();
     this.renderPipeline = new RenderPipeline(this.scene, this.camera);
     this.setupLights();
@@ -33,27 +38,29 @@ export class GameState {
     this.scene.background = hdr;
     //this.scene.background = new THREE.Color("#1680AF");
 
+    // Instantiate classes
     this.worldManager = new WorldManager(
       this.scene,
       this.camera,
       this.assetManager
     );
 
-    this.buildItemBehaviour = new BuildTileBehaviour(
+    this.buildTileMode = new BuildTileMode(
       this.scene,
       this.renderPipeline,
       this.assetManager,
       this.worldManager
     );
 
+    this.demolishMode = new DemolishMode(
+      this.renderPipeline,
+      this.worldManager
+    );
+
+    this.modeManager = new ModeManager(this.buildTileMode, this.demolishMode);
+
     // Build world
     this.worldManager.buildWorld();
-
-    const fence = this.assetManager.getModel(
-      ModelAsset.FenceWood
-    ) as THREE.Mesh;
-    this.assetManager.applyModelTexture(fence, TextureAsset.Farm);
-    //this.scene.add(fence);
 
     // Start game
     this.update();
