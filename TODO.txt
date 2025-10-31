@@ -5,6 +5,16 @@
 - don't highlight props on tile when placing, just the tile plane - might need a separate 'highlight' or reticle object instead
 
 
-
+FEATURES:
 - RTS camera controller 
 - day/night cycle (pass light dir into grass/path shaders)
+
+
+TILES:
+- tree tiles (one tree per tile, have a few types of trees to roll from)
+- farm soil tile (either use texture or maybe the farm pack ground model with furrows)
+
+
+BUILDINGS:
+- farmhouse?
+- market stall? 

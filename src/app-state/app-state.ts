@@ -7,6 +7,7 @@ class AppState {
   started = false;
 
   showBuildMenu = false;
+  demolishing = false;
 
   gameState?: GameState;
 
@@ -31,7 +32,26 @@ class AppState {
       this.gameState?.buildItemBehaviour.stopPlacingBuildItem();
     }
 
+    // Stop demolishing
+    if (this.demolishing) {
+      this.demolishing = false;
+      eventUpdater.fire("toggle-demolish");
+    }
+
     eventUpdater.fire("toggled-build-menu");
+  };
+
+  toggleDemolish = () => {
+    this.demolishing = !this.demolishing;
+
+    // If now demolishing, stop other things
+    if (this.showBuildMenu) {
+      this.showBuildMenu = false;
+      this.gameState?.buildItemBehaviour.stopPlacingBuildItem();
+      eventUpdater.fire("toggled-build-menu");
+    }
+
+    eventUpdater.fire("toggle-demolish");
   };
 
   private async loadGame() {

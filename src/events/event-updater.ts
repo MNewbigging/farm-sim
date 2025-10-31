@@ -2,7 +2,8 @@ export type GameEvent =
   | "game-loaded"
   | "game-started"
   | "toggled-build-menu"
-  | "build-item";
+  | "build-item"
+  | "toggle-demolish";
 
 type EventCallback = () => void;
 

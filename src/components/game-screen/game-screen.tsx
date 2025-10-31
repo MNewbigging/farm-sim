@@ -9,11 +9,13 @@ interface GameScreenProps {
 }
 
 export function GameScreen({ gameState }: GameScreenProps) {
-  useEventUpdater("toggled-build-menu");
+  useEventUpdater("toggled-build-menu", "toggle-demolish");
 
   const buildActiveClass = appState.showBuildMenu ? "active" : "";
-
   const buildBtnClass = ["button", buildActiveClass].join(" ");
+
+  const demolishActiveClass = appState.demolishing ? "active" : "";
+  const demolishBtnClass = ["button", demolishActiveClass].join(" ");
 
   return (
     <>
@@ -24,12 +26,23 @@ export function GameScreen({ gameState }: GameScreenProps) {
       <div className="game-screen">
         <div className="no-touch"></div>
         <div className="bottom-bar-area">
+          <div></div>
+
           <div
             className={buildBtnClass}
             data-tooltip="Build"
             onClick={appState.toggleBuildMenu}
           >
             B
+          </div>
+
+          <div
+            className={demolishBtnClass}
+            data-tooltip="Demolish"
+            data-positionleft=""
+            onClick={appState.toggleDemolish}
+          >
+            D
           </div>
         </div>
       </div>

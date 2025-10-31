@@ -14,12 +14,14 @@
     z-index: 1;
     background: #2a7b9b;
     border-top: 2px solid white;
+    padding: 0px 10px;
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 
     .button {
+      position: relative;
       cursor: pointer;
       user-select: none;
       width: 40px;
@@ -50,4 +52,8 @@
   padding: 0.25em;
   background: #eee;
   font-size: 20px;
+}
+
+[data-positionleft]:hover::after {
+  left: -50px;
 }
