@@ -1,3 +1,5 @@
+uniform vec3 sunDirection_W;
+
 in vec3 tangent;
 
 out vec4 vWorldPosition;
@@ -17,7 +19,7 @@ void main() {
   vec3 N = normalize(normalMatrix * normal);
   TBN = mat3(T, B, N);
 
-  vSunDirection = vec3(viewMatrix * vec4(1.0, 0.5, 1.0, 0.0));
+  vSunDirection = vec3(viewMatrix * vec4(sunDirection_W, 0.0));
 
   vUv = uv;
 

@@ -17,6 +17,16 @@ export class WorldManager {
     private assetManager: AssetManager
   ) {}
 
+  updateSunUniforms(sun: THREE.DirectionalLight) {
+    for (const row of this.groundTiles) {
+      for (const tile of row) {
+        (tile.material as THREE.ShaderMaterial).uniforms["sunDirection_W"].value
+          .set(sun.position.x * -1, sun.position.y, sun.position.z * -1)
+          .normalize();
+      }
+    }
+  }
+
   buildWorld() {
     this.createGroundTiles();
   }

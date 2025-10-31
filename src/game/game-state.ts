@@ -22,6 +22,11 @@ export class GameState {
   private controls: OrbitControls;
 
   private worldManager: WorldManager;
+  private sun: THREE.DirectionalLight;
+  private sunHelper: THREE.ArrowHelper;
+
+  private dayLength = 30; // in seconds
+  private time = 0;
 
   constructor(private assetManager: AssetManager) {
     // Scene setup
@@ -62,6 +67,12 @@ export class GameState {
     // Build world
     this.worldManager.buildWorld();
 
+    this.sun = new THREE.DirectionalLight(undefined, Math.PI);
+    this.sun.position.copy(new THREE.Vector3(0.75, 1, 0.75).normalize());
+    this.scene.add(this.sun);
+    this.sunHelper = new THREE.ArrowHelper();
+    this.scene.add(this.sunHelper);
+
     // Start game
     this.update();
   }
@@ -75,10 +86,6 @@ export class GameState {
   private setupLights() {
     const ambientLight = new THREE.AmbientLight(undefined, 1);
     this.scene.add(ambientLight);
-
-    const directLight = new THREE.DirectionalLight(undefined, Math.PI);
-    directLight.position.copy(new THREE.Vector3(0.75, 1, 0.75).normalize());
-    this.scene.add(directLight);
   }
 
   private update = () => {
@@ -88,6 +95,27 @@ export class GameState {
 
     this.controls.update();
 
+    this.time = (this.time + dt) % this.dayLength;
+    const timeNormalized = this.time / this.dayLength;
+    setSunPosition(timeNormalized, this.sun, this.sunHelper);
+    this.worldManager.updateSunUniforms(this.sun);
+
     this.renderPipeline.render(dt);
   };
+}
+
+function setSunPosition(
+  timeNormalized: number,
+  sun: THREE.DirectionalLight,
+  helper?: THREE.ArrowHelper
+) {
+  const theta = timeNormalized * 2 * Math.PI; // full day rotation
+  const phi = 75; // 45° tilt: controls noon height
+
+  const y = Math.sin(theta) * Math.cos(phi);
+  const z = Math.cos(theta);
+  const x = Math.sin(theta) * Math.sin(phi);
+
+  sun.position.set(x, y, z);
+  helper?.setDirection(sun.position);
 }
