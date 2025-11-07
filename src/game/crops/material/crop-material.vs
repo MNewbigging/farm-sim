@@ -7,7 +7,7 @@ out vec3 vNormal;
 void main() {
 
   // TEMP
-  vec3 transformedNormal = normalize(vec3(0.1, 1.0, 0.1));
+  vec3 transformedNormal = normalize(vec3(0.0, 1.0, 0.1));
 
   mat3 im = mat3(instanceMatrix);
   transformedNormal /= vec3(dot(im[0], im[0]), dot(im[1], im[1]), dot(im[2], im[2]));

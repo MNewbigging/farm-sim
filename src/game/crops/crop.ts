@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { CropMaterial } from "./material/crop-material";
+import { easeOutSine } from "../utils";
 
 export interface CropParams {
   instanceCount: number;
@@ -27,15 +28,12 @@ export abstract class Crop extends THREE.InstancedMesh {
 
     this.tileAridness = params.tileAridness;
     this.maxYield = Math.floor(params.instanceCount * params.tileSoilQuality);
-
-    // this.scale.setScalar(0);
   }
 
   grow(dt: number) {
     if (this.timeElapsed === this.timeToGrow) return; // maybe we should have some notion of decay after fully grown...
 
     // growth speed is the inverse of the distance to the ideal aridness
-    // todo this can all just be computed once in the constructor
     let growthSpeedFactor = Math.abs(
       1 - this.aridPreference - this.tileAridness
     );
@@ -46,7 +44,8 @@ export abstract class Crop extends THREE.InstancedMesh {
     this.timeElapsed += dt * growthSpeedFactor;
     this.timeElapsed = Math.min(this.timeElapsed, this.timeToGrow); // cap
 
-    this.material.uniforms.growth.value = this.timeElapsed / this.timeToGrow;
+    const growthAmount = this.timeElapsed / this.timeToGrow;
+    this.material.uniforms.growth.value = easeOutSine(growthAmount);
   }
 
   harvest(): number {
