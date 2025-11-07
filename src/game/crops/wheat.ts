@@ -15,7 +15,7 @@ export class Wheat extends Crop {
     );
     // const material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
     const material = new CropMaterial({
-      color: new THREE.Color(0.85, 0.9, 0.1),
+      color: new THREE.Color(0.95, 0.7, 0.05),
     });
 
     const numPlants = getRandomIntInRange(15, 30);

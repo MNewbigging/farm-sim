@@ -8,7 +8,7 @@ in vec3 vSunDirection;
 in vec3 vNormal;
 in vec3 vPosition;
 
-const vec3 growingColour = vec3(0.11, 0.2, 0.01);
+const vec3 rootColour = vec3(0.11, 0.2, 0.01);
 
 void main() {
   // // TEMP 
@@ -19,8 +19,9 @@ void main() {
   float dotP = dot(vNormal, vSunDirection);
   dotP = clamp(dotP, 0.0, 1.0);
 
-  vec3 color = mix(growingColour, cropColor, growth);
-  color = mix(growingColour, cropColor, vPosition.y);
+  float t = pow(growth, 4.0);
+  vec3 color = mix(rootColour, cropColor, t);
+  color = mix(rootColour, color, vPosition.y);
 
   color *= dotP;
 

@@ -54,6 +54,6 @@ export abstract class Crop extends THREE.InstancedMesh {
     const cropYield = this.maxYield * (this.timeElapsed / this.timeToGrow);
     this.timeElapsed = 0; // start growing again
 
-    return cropYield;
+    return Math.floor(cropYield);
   }
 }
