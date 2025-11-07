@@ -8,15 +8,25 @@ export class CropTile extends Tile {
 
   constructor(rowIndex: number, colIndex: number) {
     const geometry = new THREE.PlaneGeometry().rotateX(Math.PI * -0.5);
+
+    // temp
+    const aridness = Math.random();
+    const color = new THREE.Color(0.03, 0.015, 0.0).lerp(
+      new THREE.Color(0.05, 0.03, 0),
+      aridness
+    );
+
     const material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(0.05, 0.025, 0.0),
+      color,
     });
 
     super(geometry, material, rowIndex, colIndex);
 
     // TEMP
-    this._crop = new Wheat(0, 1);
+    const cropYieldFactor = 1.0;
+    this._crop = new Wheat(aridness, cropYieldFactor);
     this.add(this._crop);
+    //
   }
 
   setCrop() {
