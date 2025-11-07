@@ -26,6 +26,7 @@ export class GameState {
 
   private dayLength = 30; // in seconds
   private time = 0;
+  private elapsed = 0;
 
   constructor(private assetManager: AssetManager) {
     // Scene setup
@@ -92,13 +93,14 @@ export class GameState {
     requestAnimationFrame(this.update);
 
     const dt = this.clock.getDelta();
+    this.elapsed += dt;
 
     this.controls.update();
 
     this.time = (this.time + dt) % this.dayLength;
     const timeNormalized = this.time / this.dayLength;
     setSunPosition(0.2, this.sun, this.sunHelper);
-    this.worldManager.updateTiles(dt, this.sun);
+    this.worldManager.updateTiles(dt, this.elapsed, this.sun);
 
     this.renderPipeline.render(dt);
   };

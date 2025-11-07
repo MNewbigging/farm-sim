@@ -30,7 +30,9 @@ export abstract class Crop extends THREE.InstancedMesh {
     this.maxYield = Math.floor(params.instanceCount * params.tileSoilQuality);
   }
 
-  grow(dt: number) {
+  update(dt: number, elapsed: number) {
+    this.material.uniforms.elapsed.value = elapsed;
+
     if (this.timeElapsed === this.timeToGrow) return; // maybe we should have some notion of decay after fully grown...
 
     // growth speed is the inverse of the distance to the ideal aridness

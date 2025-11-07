@@ -20,11 +20,11 @@ export class WorldManager {
 
   // todo don't loop here and above...
   // we should probably store a set of each type, so that we can update them explicitly
-  updateTiles(dt: number, sun: THREE.DirectionalLight) {
+  updateTiles(dt: number, elapsed: number, sun: THREE.DirectionalLight) {
     for (const row of this.groundTiles) {
       for (const tile of row) {
         if (tile instanceof CropTile) {
-          tile.update(dt);
+          tile.update(dt, elapsed);
         }
 
         this.updateSunUniforms(tile, sun);

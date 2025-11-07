@@ -9,6 +9,7 @@ interface CropMaterialParameters {
 interface CropMaterialUniforms {
   growth: THREE.IUniform<number>; // normalised to 0-1
   cropColor: THREE.IUniform<THREE.Color>;
+  elapsed: THREE.IUniform<number>;
 }
 
 export class CropMaterial extends THREE.ShaderMaterial {
@@ -23,6 +24,7 @@ export class CropMaterial extends THREE.ShaderMaterial {
       uniforms: {
         growth: { value: 1 },
         cropColor: { value: params.color },
+        elapsed: { value: 0 },
       },
       side: THREE.DoubleSide,
     });

@@ -33,8 +33,8 @@ export class CropTile extends Tile {
     // todo
   }
 
-  update(dt: number) {
-    this._crop?.grow(dt);
+  update(dt: number, elapsed: number) {
+    this._crop?.update(dt, elapsed);
   }
 
   dispose(): void {
