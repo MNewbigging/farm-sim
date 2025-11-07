@@ -6,8 +6,8 @@ import { AssetManager, TextureAsset } from "../../asset-manager";
 
 export class GrassWithLeavesTile extends Tile {
   constructor(
-    public readonly rowIndex: number,
-    public readonly colIndex: number,
+    rowIndex: number,
+    colIndex: number,
     protected assetManager: AssetManager
   ) {
     const diffuseA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
@@ -26,7 +26,7 @@ export class GrassWithLeavesTile extends Tile {
     geometry.computeVertexNormals();
     geometry.computeTangents();
 
-    super(geometry, material);
+    super(geometry, material, rowIndex, colIndex);
   }
 
   dispose() {

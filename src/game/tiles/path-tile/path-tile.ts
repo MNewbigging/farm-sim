@@ -8,11 +8,7 @@ import { BlendMaterialParameters, Material } from "../grass-tile/grass-tile";
 export class PathTile extends Tile {
   private readonly vertices: number;
 
-  constructor(
-    public readonly rowIndex: number,
-    public readonly colIndex: number,
-    assetManager: AssetManager
-  ) {
+  constructor(rowIndex: number, colIndex: number, assetManager: AssetManager) {
     const diffuseA = assetManager.textures.get(TextureAsset.GrassDiffuse)!;
     const normalA = assetManager.textures.get(TextureAsset.GrassNormal)!;
     const diffuseB = assetManager.textures.get(TextureAsset.FootpathDiffuse)!;
@@ -53,7 +49,7 @@ export class PathTile extends Tile {
     geometry.computeVertexNormals();
     geometry.computeTangents();
 
-    super(geometry, material);
+    super(geometry, material, rowIndex, colIndex);
 
     this.vertices = vertices;
   }

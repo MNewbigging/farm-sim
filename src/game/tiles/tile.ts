@@ -1,10 +1,34 @@
 import * as THREE from "three";
 
 export abstract class Tile extends THREE.Mesh {
-  abstract readonly rowIndex: number;
-  abstract readonly colIndex: number;
+  readonly rowIndex: number;
+  readonly colIndex: number;
 
-  abstract dispose(): void;
+  readonly soilQuality: number;
+  readonly aridness: number;
+
+  declare material: THREE.Material;
+
+  constructor(
+    geometry: THREE.BufferGeometry,
+    material: THREE.Material,
+    rowIndex: number,
+    colIndex: number
+  ) {
+    super(geometry, material);
+
+    this.rowIndex = rowIndex;
+    this.colIndex = colIndex;
+
+    // temp
+    this.soilQuality = 1;
+    this.aridness = 0;
+  }
+
+  dispose(): void {
+    this.geometry.dispose();
+    this.material.dispose();
+  }
 }
 
 export enum TileEdge {
