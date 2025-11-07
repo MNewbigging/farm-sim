@@ -4,13 +4,19 @@ import * as THREE from "three";
 import { CropMaterial } from "./material/crop-material";
 
 export class Wheat extends Crop {
-  protected timeToGrow = 60;
+  protected timeToGrow = 15;
   protected aridPreference = 0;
 
   constructor(tileAridness: number, tileSoilQuality: number) {
-    const geometry = new THREE.PlaneGeometry(0.2, 1).translate(0, 0.5, 0);
+    const geometry = new THREE.PlaneGeometry(0.15, 1, 1, 4).translate(
+      0,
+      0.5,
+      0
+    );
     // const material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
-    const material = new CropMaterial();
+    const material = new CropMaterial({
+      color: new THREE.Color(0.85, 0.9, 0.1),
+    });
 
     const numPlants = getRandomIntInRange(15, 30);
     super(geometry, material, {
@@ -40,7 +46,7 @@ export class Wheat extends Crop {
 
       rotation.setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
-        Math.random() * Math.PI
+        Math.random() * Math.PI * 2
       );
       scale.setScalar(getRandomInRange(0.8, 1));
 
