@@ -6,6 +6,7 @@ import { BuildTileMode } from "./build-tiles/build-tile-mode";
 import { WorldManager } from "./world-manager";
 import { ModeManager } from "./mode-manager";
 import { DemolishMode } from "./demolish-mode";
+import { Wheat } from "./crops/wheat";
 
 export class GameState {
   modeManager: ModeManager;
@@ -25,6 +26,8 @@ export class GameState {
 
   private dayLength = 30; // in seconds
   private time = 0;
+
+  private wheat: Wheat;
 
   constructor(private assetManager: AssetManager) {
     // Scene setup
@@ -72,6 +75,10 @@ export class GameState {
     this.sunHelper = new THREE.ArrowHelper();
     this.scene.add(this.sunHelper);
 
+    // TESTING
+    this.wheat = new Wheat(0, 1);
+    this.scene.add(this.wheat);
+
     // Start game
     this.update();
   }
@@ -93,6 +100,8 @@ export class GameState {
     const dt = this.clock.getDelta();
 
     this.controls.update();
+
+    this.wheat.grow(dt);
 
     this.time = (this.time + dt) % this.dayLength;
     const timeNormalized = this.time / this.dayLength;

@@ -3,18 +3,24 @@ import { Tile } from "../tile";
 import * as THREE from "three";
 
 export class CropTile extends Tile {
-  readonly crop: Crop;
+  crop?: Crop; // hmm, should this be optional?
 
-  constructor(rowIndex: number, colIndex: number, crop: Crop) {
+  constructor(rowIndex: number, colIndex: number) {
     const geometry = new THREE.PlaneGeometry().rotateX(Math.PI * -0.5);
     const material = new THREE.MeshStandardMaterial();
 
     super(geometry, material, rowIndex, colIndex);
+  }
 
-    this.crop = crop;
+  update(dt: number) {
+    this.crop?.grow(dt);
   }
 
   dispose(): void {
     throw new Error("Method not implemented.");
+  }
+
+  harvest(): number | undefined {
+    return this.crop?.harvest();
   }
 }
