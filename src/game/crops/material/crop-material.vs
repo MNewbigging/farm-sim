@@ -3,6 +3,7 @@ uniform float growth;
 // temp
 out vec3 vSunDirection;
 out vec3 vNormal;
+out vec3 vPosition;
 
 vec3 rotateVector(vec3 v, vec3 axis, float angle) {
     // Axis must be normalized
@@ -29,6 +30,8 @@ void main() {
   // ====
 
   vec3 transformed = position * growth;
+  vPosition = transformed;
+
   float rotationFactor = max(0.0, transformed.y - 0.5) * 0.1;
   transformed = rotateVector(transformed, vec3(1.0, 0.0, 0.0), rotationFactor);
   // transformed.x *= 1.0 + max(0.0, pow(growth * transformed.y, 5.));

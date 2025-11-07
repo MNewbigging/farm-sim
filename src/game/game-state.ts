@@ -76,7 +76,7 @@ export class GameState {
     this.scene.add(this.sunHelper);
 
     // TESTING
-    this.wheat = new Wheat(0, 1);
+    this.wheat = new Wheat(0.1, 1);
     this.scene.add(this.wheat);
 
     // Start game
