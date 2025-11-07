@@ -1,5 +1,6 @@
 import { Crop } from "../../crops/crop";
 import { Wheat } from "../../crops/wheat";
+import { cnoise } from "../../noise";
 import { Tile } from "../tile";
 import * as THREE from "three";
 
@@ -9,8 +10,12 @@ export class CropTile extends Tile {
   constructor(rowIndex: number, colIndex: number) {
     const geometry = new THREE.PlaneGeometry().rotateX(Math.PI * -0.5);
 
-    // temp
-    const aridness = Math.random();
+    const scale = 0.33;
+    const aridness =
+      cnoise(new THREE.Vector2(rowIndex * scale, colIndex * scale)) * 0.5 + 0.5; // [0:1] range
+
+    console.log(aridness);
+
     const color = new THREE.Color(0.03, 0.015, 0.0).lerp(
       new THREE.Color(0.05, 0.03, 0),
       aridness
