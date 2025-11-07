@@ -27,8 +27,6 @@ export class GameState {
   private dayLength = 30; // in seconds
   private time = 0;
 
-  private wheat: Wheat;
-
   constructor(private assetManager: AssetManager) {
     // Scene setup
     this.setupCamera();
@@ -75,10 +73,6 @@ export class GameState {
     this.sunHelper = new THREE.ArrowHelper();
     this.scene.add(this.sunHelper);
 
-    // TESTING
-    this.wheat = new Wheat(0.1, 1);
-    this.scene.add(this.wheat);
-
     // Start game
     this.update();
   }
@@ -101,12 +95,10 @@ export class GameState {
 
     this.controls.update();
 
-    this.wheat.grow(dt);
-
     this.time = (this.time + dt) % this.dayLength;
     const timeNormalized = this.time / this.dayLength;
     setSunPosition(0.2, this.sun, this.sunHelper);
-    this.worldManager.updateSunUniforms(this.sun);
+    this.worldManager.updateTiles(dt, this.sun);
 
     this.renderPipeline.render(dt);
   };

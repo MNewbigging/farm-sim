@@ -3,6 +3,7 @@ import { GrassWithLeavesTile } from "./tiles/grass-tile/grass-tile";
 import { Tile, TileNeighbours } from "./tiles/tile";
 import { AssetManager } from "./asset-manager";
 import { setNdc } from "../utils/utils";
+import { CropTile } from "./tiles/crop-tile/crop-tile";
 
 export class WorldManager {
   private readonly worldGridSize = 10;
@@ -17,12 +18,16 @@ export class WorldManager {
     private assetManager: AssetManager
   ) {}
 
-  updateSunUniforms(sun: THREE.DirectionalLight) {
+  // todo don't loop here and above...
+  // we should probably store a set of each type, so that we can update them explicitly
+  updateTiles(dt: number, sun: THREE.DirectionalLight) {
     for (const row of this.groundTiles) {
       for (const tile of row) {
-        (tile.material as THREE.ShaderMaterial).uniforms["sunDirection_W"].value
-          .set(sun.position.x * -1, sun.position.y, sun.position.z * -1)
-          .normalize();
+        if (tile instanceof CropTile) {
+          tile.update(dt);
+        }
+
+        this.updateSunUniforms(tile, sun);
       }
     }
   }
@@ -128,5 +133,13 @@ export class WorldManager {
     const { rowIndex, colIndex } = tile; // will have already been set in constructor
     // For now, tiles are 1m squared meaning we can just use the index itself as the positional value
     tile.position.set(colIndex, 0, rowIndex); // note rows are along z axis
+  }
+
+  private updateSunUniforms(tile: Tile, sun: THREE.DirectionalLight) {
+    if (!(tile.material instanceof THREE.ShaderMaterial)) return;
+
+    tile.material.uniforms["sunDirection_W"].value
+      .set(sun.position.x * -1, sun.position.y, sun.position.z * -1)
+      .normalize();
   }
 }

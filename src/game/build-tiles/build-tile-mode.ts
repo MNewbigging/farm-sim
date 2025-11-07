@@ -7,16 +7,18 @@ import { FencePlacer } from "./fence-placer";
 import { PathTilePlacer } from "./path-tile-placer";
 import { WorldManager } from "../world-manager";
 import { Mode, ModeName } from "../mode-manager";
+import { CropPlacer } from "./crop-tile-placer";
 
 export enum BuildTile {
   Path = "Path",
   Fence = "Fence",
+  Crop = "Crop",
 }
 
 export interface BuildTilePlacer {
-  isTileValid: (tile: Tile) => boolean;
-  onHoverTile?: (tile: Tile) => void;
-  onPlace: (tile: Tile) => Tile; // passes current tile, expects new replacement tile
+  isTileValid(tile: Tile): boolean;
+  onHoverTile?(tile: Tile): void;
+  onPlace(tile: Tile): Tile; // passes current tile, expects new replacement tile
   onStop?: () => void;
 }
 
@@ -79,6 +81,8 @@ export class BuildTileMode implements Mode {
           this.outlineLastTile
         );
         break;
+      case BuildTile.Crop:
+        this.currentPlacer = new CropPlacer(this.worldManager);
     }
 
     if (!this.currentPlacer) {

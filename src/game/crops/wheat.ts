@@ -26,7 +26,6 @@ export class Wheat extends Crop {
       tileSoilQuality,
     });
 
-    // todo use halton points for more even distribution
     const position = new THREE.Vector3();
     const rotation = new THREE.Quaternion();
     const scale = new THREE.Vector3();
@@ -34,11 +33,6 @@ export class Wheat extends Crop {
     const halfSqrt2 = Math.sqrt(2) * 0.5;
 
     for (let i = 0; i < numPlants; i++) {
-      // position
-      //   .set(Math.random() * 2 - 1, 0, Math.random() * 2 - 1)
-      //   .multiplyScalar(0.5)
-      //   .multiplyScalar(Math.sqrt(2) * 0.5);
-
       const x = halton(i, 2) - 0.5;
       const z = halton(i, 3) - 0.5;
 
