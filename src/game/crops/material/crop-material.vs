@@ -3,7 +3,8 @@ uniform float elapsed;
 
 // temp
 out vec3 vSunDirection;
-out vec3 vNormal;
+out vec3 vNormalFront;
+out vec3 vNormalBack;
 out vec3 vPosition;
 
 vec3 rotateVector(vec3 v, vec3 axis, float angle) {
@@ -74,8 +75,9 @@ void main() {
   mat3 im = mat3(instanceMatrix);
   transformedNormal /= vec3(dot(im[0], im[0]), dot(im[1], im[1]), dot(im[2], im[2]));
   transformedNormal = im * transformedNormal;
-  transformedNormal = normalMatrix * transformedNormal;
-  vNormal = transformedNormal;
+
+  vNormalFront = normalMatrix * transformedNormal;
+  vNormalBack = normalMatrix * (transformedNormal * vec3(-1.0, 1.0, -1.0));
 
   vSunDirection = vec3(normalize(viewMatrix * vec4(0.5, 0.5, 0.5, 0.0)));
   // ====
