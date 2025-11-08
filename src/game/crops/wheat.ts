@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { CropMaterial } from "./material/crop-material";
 
 export class Wheat extends Crop {
-  protected timeToGrow = 15;
+  protected timeToGrow = 5;
   protected aridPreference = 0;
 
   constructor(tileAridness: number, tileSoilQuality: number) {
@@ -18,7 +18,7 @@ export class Wheat extends Crop {
       color: new THREE.Color(0.95, 0.7, 0.05),
     });
 
-    const numPlants = getRandomIntInRange(15, 30);
+    const numPlants = getRandomIntInRange(25, 45);
     super(geometry, material, {
       instanceCount: numPlants,
       cropYield: 10,
@@ -36,7 +36,7 @@ export class Wheat extends Crop {
       const x = halton(i, 2) - 0.5;
       const z = halton(i, 3) - 0.5;
 
-      position.set(z, 0, x).multiplyScalar(halfSqrt2);
+      position.set(z, 0, x); //.multiplyScalar(halfSqrt2);
 
       rotation.setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),

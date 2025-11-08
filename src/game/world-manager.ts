@@ -6,7 +6,7 @@ import { setNdc } from "../utils/utils";
 import { CropTile } from "./tiles/crop-tile/crop-tile";
 
 export class WorldManager {
-  private readonly worldGridSize = 10;
+  private readonly worldGridSize = 25;
   private groundTiles: Tile[][] = [];
 
   private ndc = new THREE.Vector2();
