@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { CropMaterial } from "./material/crop-material";
 
 export class Wheat extends Crop {
-  protected timeToGrow = 1;
+  protected timeToGrow = 15;
   protected aridPreference = 0;
 
   constructor(tileAridness: number, tileSoilQuality: number) {

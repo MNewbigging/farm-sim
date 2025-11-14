@@ -36,11 +36,9 @@ export abstract class Crop extends THREE.InstancedMesh {
     if (this.timeElapsed === this.timeToGrow) return; // maybe we should have some notion of decay after fully grown...
 
     // growth speed is the inverse of the distance to the ideal aridness
-    // let growthSpeedFactor = Math.abs(
-    //   1 - this.aridPreference - this.tileAridness
-    // );
-
-    let growthSpeedFactor = 1;
+    let growthSpeedFactor = Math.abs(
+      1 - this.aridPreference - this.tileAridness
+    );
 
     // make mismatching aridity more punishing?
     growthSpeedFactor = Math.pow(growthSpeedFactor, 2.0);
