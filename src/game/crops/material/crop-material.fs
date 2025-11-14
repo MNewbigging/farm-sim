@@ -18,18 +18,24 @@ void main() {
   // float faceDirection = gl_FrontFacing ? 1.0 : -1.0;
   // normal *= faceDirection;
 
-  vec3 X = dFdx(vViewPosition);
-  vec3 Y = dFdy(vViewPosition);
-  normal = normalize(cross(X, Y));
+  // vec3 X = dFdx(vViewPosition);
+  // vec3 Y = dFdy(vViewPosition);
+  // normal = normalize(cross(X, Y));
 
+  // diffuse
   float dotP = dot(normal, vSunDirection);
   dotP = clamp(dotP, 0.0, 1.0);
+
+  // spec
+  vec3 viewDir = normalize(vViewPosition);
+  vec3 reflectDir = reflect(vSunDirection, normal);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64.0);
 
   float t = pow(growth, 4.0);
   vec3 color = mix(rootColour, cropColor, t);
   color = mix(rootColour, color, vPosition.y);
 
-  color *= dotP + 0.25;
+  vec3 final = color * (dotP + spec);
 
-  pc_fragColor = vec4(color, 1.0);
+  pc_fragColor = vec4(final, 1.0);
 }

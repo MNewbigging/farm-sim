@@ -63,7 +63,7 @@ float cnoise(vec2 P) {
 }
 
 const float noiseScale0 = 0.1;
-const float noiseAmplitude0 = 0.3;
+const float noiseAmplitude0 = 0.6;
 const float noiseScale1 = 0.8;
 const float noiseAmplitude1 = 0.033;
 const float windSpeed = 0.5;
@@ -74,18 +74,8 @@ const float windSpeed = 0.5;
 
 void main() {
 
-  // TEMP
-  vec3 transformedNormal = normalize(vec3(0.0, 0.0, 1.0));
-
-  mat3 im = mat3(instanceMatrix);
-  transformedNormal /= vec3(dot(im[0], im[0]), dot(im[1], im[1]), dot(im[2], im[2]));
-  transformedNormal = im * transformedNormal;
-
-  vNormalFront = normalMatrix * transformedNormal;
-  vNormalBack = normalMatrix * (transformedNormal * vec3(-1.0, 1.0, -1.0));
-
-  vSunDirection = vec3(normalize(viewMatrix * vec4(0.5, 0.5, 0.5, 0.0)));
-  // ====
+  // Base normal
+  vec3 baseNormal = normalize(vec3(0.0, 0.0, 1.0));
 
   vec3 transformed = position * growth;
   vPosition = transformed;
@@ -105,6 +95,24 @@ void main() {
 
   transformed = rotateVector(transformed, windDirection, windRotationFactor);
   worldPosition = modelMatrix * instanceMatrix * vec4(transformed, 1.0);
+
+  // Normals (cont.)
+  vec3 transformedNormalFront = rotateVector(baseNormal, windDirection, windRotationFactor);
+  vec3 transformedNormalBack = baseNormal * vec3(-1.0, 1.0, -1.0); // invert XZ
+  transformedNormalBack = rotateVector(transformedNormalBack, windDirection, windRotationFactor);
+
+  mat3 im = mat3(instanceMatrix);
+  transformedNormalFront /= vec3(dot(im[0], im[0]), dot(im[1], im[1]), dot(im[2], im[2]));
+  transformedNormalFront = im * transformedNormalFront;
+
+  transformedNormalBack /= vec3(dot(im[0], im[0]), dot(im[1], im[1]), dot(im[2], im[2]));
+  transformedNormalBack = im * transformedNormalBack;
+
+  vNormalFront = normalMatrix * transformedNormalFront;
+  vNormalBack = normalMatrix * transformedNormalBack;
+
+  vSunDirection = vec3(normalize(viewMatrix * vec4(-0.25, 1.0, -0.25, 0.0)));
+  // ====
 
   vViewPosition = vec3(viewMatrix * worldPosition);
 
