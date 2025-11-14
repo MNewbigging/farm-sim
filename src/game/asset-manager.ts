@@ -13,6 +13,7 @@ export enum ModelAsset {
   BOX_SMALL = "box-small.glb",
   FenceWood = "SM_Prop_Fence_Wood_02.fbx",
   FenceWoodPole = "SM_Prop_Fence_Wood_Pole_01.fbx",
+  StoneCabin = "SM_Bld_Stone_Cabin_01.fbx",
 }
 
 export enum TextureAsset {
@@ -25,6 +26,7 @@ export enum TextureAsset {
   FootpathDiffuse = "footpath/Footpath_Tiles_Texture_01.png",
   FootpathNormal = "footpath/Footpath_Tiles_Normals_01.png",
   Farm = "PolygonFarm_Texture_01_A.png",
+  Meadow = "PolygonNatureBiomes_Meadow_Texture_01.png",
 }
 
 export class AssetManager {
@@ -60,7 +62,7 @@ export class AssetManager {
     // Ensure we always return an object 3d
     return new THREE.Mesh(
       new THREE.SphereGeometry(),
-      new THREE.MeshBasicMaterial({ color: "red" }),
+      new THREE.MeshBasicMaterial({ color: "red" })
     );
   }
 
@@ -77,16 +79,6 @@ export class AssetManager {
   }
 
   private loadModels() {
-    this.loadModel(ModelAsset.BANDIT);
-
-    this.loadModel(ModelAsset.BOX_SMALL, (group: THREE.Group) => {
-      group.traverse((child: THREE.Object3D) => {
-        if (child instanceof THREE.Mesh) {
-          child.material.metalness = 0; // kenney assets require this to render correctly
-        }
-      });
-    });
-
     this.loadModel(ModelAsset.FenceWood, (fence: THREE.Group) => {
       fence.scale.set(0.004, 0.005, 0.005);
       fence.translateX(-0.5);
@@ -95,60 +87,69 @@ export class AssetManager {
     this.loadModel(ModelAsset.FenceWoodPole, (pole: THREE.Group) => {
       pole.scale.set(0.005, 0.005, 0.005);
     });
+
+    this.loadModel(ModelAsset.StoneCabin, (cabin: THREE.Group) => {
+      cabin.scale.multiplyScalar(0.01);
+    });
   }
 
   private loadTextures() {
     this.loadTexture(
       TextureAsset.BANDIT,
-      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
     );
 
     this.loadTexture(
       TextureAsset.HDR,
-      (texture) => (texture.mapping = THREE.EquirectangularReflectionMapping),
+      (texture) => (texture.mapping = THREE.EquirectangularReflectionMapping)
     );
 
     // todo - change color space on these?
     this.loadTexture(
       TextureAsset.GrassDiffuse,
-      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
     );
     this.loadTexture(
       TextureAsset.GrassNormal,
-      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace),
+      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace)
     );
     this.loadTexture(
       TextureAsset.GrassLeavesDiffuse,
-      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
     );
     this.loadTexture(
       TextureAsset.GrassLeavesNormal,
-      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace),
+      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace)
     );
     this.loadTexture(
       TextureAsset.FootpathDiffuse,
-      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
     );
     this.loadTexture(
       TextureAsset.FootpathNormal,
-      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace),
+      (texture) => (texture.colorSpace = THREE.LinearSRGBColorSpace)
     );
 
     this.loadTexture(
       TextureAsset.Farm,
-      (texture) => (texture.colorSpace = THREE.SRGBColorSpace),
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
+    );
+
+    this.loadTexture(
+      TextureAsset.Meadow,
+      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
     );
   }
 
   private loadAnimations() {
     Object.values(AnimationAsset).forEach((filename) =>
-      this.loadAnimation(filename),
+      this.loadAnimation(filename)
     );
   }
 
   private loadModel(
     filename: ModelAsset,
-    onLoad?: (group: THREE.Group) => void,
+    onLoad?: (group: THREE.Group) => void
   ) {
     const path = `${getPathPrefix()}/models/${filename}`;
     const url = getUrl(path);
@@ -174,7 +175,7 @@ export class AssetManager {
 
   private loadTexture(
     filename: TextureAsset,
-    onLoad?: (texture: THREE.Texture) => void,
+    onLoad?: (texture: THREE.Texture) => void
   ) {
     const path = `${getPathPrefix()}/textures/${filename}`;
     const url = getUrl(path);

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
-import { AssetManager, TextureAsset } from "./asset-manager";
+import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
 import { BuildTileMode } from "./build-tiles/build-tile-mode";
 import { WorldManager } from "./world-manager";
 import { ModeManager } from "./mode-manager";
@@ -67,6 +67,10 @@ export class GameState {
 
     // Build world
     this.worldManager.buildWorld();
+
+    const cabin = this.assetManager.getModel(ModelAsset.StoneCabin);
+    this.assetManager.applyModelTexture(cabin, TextureAsset.Meadow);
+    this.scene.add(cabin);
 
     this.sun = new THREE.DirectionalLight(undefined, Math.PI);
     this.sun.position.copy(new THREE.Vector3(0.75, 1, 0.75).normalize());
