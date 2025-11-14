@@ -1,3 +1,10 @@
+
+// kinda wasteful, but oh well
+struct Normals {
+  vec3 front;
+  vec3 back;
+};
+
 uniform float growth;
 uniform float elapsed;
 
@@ -6,6 +13,9 @@ out vec3 vSunDirection;
 out vec3 vNormalFront;
 out vec3 vNormalBack;
 out vec3 vPosition;
+out vec3 vViewPosition;
+
+out Normals normals;
 
 vec3 rotateVector(vec3 v, vec3 axis, float angle) {
     // Axis must be normalized
@@ -62,37 +72,59 @@ float cnoise(vec2 P) {
 }
 
 const float noiseScale0 = 0.1;
-const float noiseAmplitude0 = 0.15;
+const float noiseAmplitude0 = 0.6;
 const float noiseScale1 = 0.8;
 const float noiseAmplitude1 = 0.033;
 const float windSpeed = 0.5;
 
+// float getNoiseAt(in vec3 pos) {
+
+// }
+
 void main() {
 
-  // TEMP
-  vec3 transformedNormal = normalize(vec3(0.0, 1.0, 0.2));
-
-  mat3 im = mat3(instanceMatrix);
-  transformedNormal /= vec3(dot(im[0], im[0]), dot(im[1], im[1]), dot(im[2], im[2]));
-  transformedNormal = im * transformedNormal;
-
-  vNormalFront = normalMatrix * transformedNormal;
-  vNormalBack = normalMatrix * (transformedNormal * vec3(-1.0, 1.0, -1.0));
-
-  vSunDirection = vec3(normalize(viewMatrix * vec4(0.5, 0.5, 0.5, 0.0)));
-  // ====
+  // Base normal
+  vec3 baseNormal = normalize(vec3(0.0, 0.6, 0.4));
 
   vec3 transformed = position * growth;
   vPosition = transformed;
 
   float rotationFactor = max(0.0, transformed.y - 0.5) * 0.1;
-  transformed = rotateVector(transformed, vec3(1.0, 0.0, 0.0), rotationFactor);
+  transformed = rotateVector(transformed, vec3(1.0, 0.0, 0.0), rotationFactor); 
 
   // add noise
   vec4 worldPosition = modelMatrix * instanceMatrix * vec4(transformed, 1.0);
   float noise0 = cnoise((worldPosition.xz * noiseScale0) + elapsed * windSpeed) * pow(transformed.y, 2.0) * noiseAmplitude0;
   float noise1 = cnoise((worldPosition.xz * noiseScale1) + elapsed * windSpeed) * pow(transformed.y, 2.0) * noiseAmplitude1;
-  worldPosition.xz += (noise0 + noise1);
+  //worldPosition.xz += (noise0 + noise1);
+
+  mat4 p_LW = inverse(mat4(modelMatrix * instanceMatrix));
+  vec3 windDirection = vec3(p_LW * vec4(-1.0, 0.0, 1.0, 0.0)); // todo pass in windDir as uniform
+  float windRotationFactor = (noise0 + noise1) * pow(transformed.y, 0.25);
+
+  transformed = rotateVector(transformed, windDirection, windRotationFactor);
+  worldPosition = modelMatrix * instanceMatrix * vec4(transformed, 1.0);
+
+  // Normals (cont.)
+  normals = Normals(baseNormal, baseNormal * vec3(-1.0, 1.0, -1.0)); // invert on XZ only
+
+  normals.front = rotateVector(normals.front, windDirection, windRotationFactor);
+  normals.back = rotateVector(normals.back, windDirection, windRotationFactor);
+
+  mat3 im = mat3(instanceMatrix);
+  normals.front /= vec3(dot(im[0], im[0]), dot(im[1], im[1]), dot(im[2], im[2]));
+  normals.front = im * normals.front;
+
+  normals.back /= vec3(dot(im[0], im[0]), dot(im[1], im[1]), dot(im[2], im[2]));
+  normals.back = im * normals.back;
+
+  normals.front = normalMatrix * normals.front;
+  normals.back = normalMatrix * normals.back;
+  // ====
+
+  vSunDirection = vec3(normalize(viewMatrix * vec4(-0.25, 0.8, -0.25, 0.0)));
+
+  vViewPosition = vec3(viewMatrix * worldPosition);
 
   gl_Position = projectionMatrix * viewMatrix * worldPosition;
 }
