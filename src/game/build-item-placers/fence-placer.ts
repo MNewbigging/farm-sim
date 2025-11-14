@@ -2,12 +2,12 @@ import * as THREE from "three";
 import { keyboardListener } from "../../listeners/keyboard-listener";
 import { AssetManager } from "../asset-manager";
 import { nextTileEdge, Tile, TileEdge } from "../tiles/tile";
-import { BuildTilePlacer } from "./build-tile-mode";
+import { BuildItemPlacer } from "./build-tile-mode";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import { FenceTile, makeFenceProp } from "../tiles/fence-tile/fence-tile";
 import { WorldManager } from "../world-manager";
 
-export class FencePlacer implements BuildTilePlacer {
+export class FencePlacer implements BuildItemPlacer {
   private displayFence: THREE.Group;
   private fenceEdge: TileEdge = TileEdge.Down; // starts this way by default
 

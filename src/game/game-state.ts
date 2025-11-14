@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
 import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
-import { BuildTileMode } from "./build-tiles/build-tile-mode";
+import { BuildItemMode } from "./build-item-placers/build-tile-mode";
 import { WorldManager } from "./world-manager";
 import { ModeManager } from "./mode-manager";
 import { DemolishMode } from "./demolish-mode";
@@ -10,7 +10,7 @@ import { Wheat } from "./crops/wheat";
 
 export class GameState {
   modeManager: ModeManager;
-  buildTileMode: BuildTileMode;
+  buildTileMode: BuildItemMode;
   demolishMode: DemolishMode;
 
   private renderPipeline: RenderPipeline;
@@ -50,7 +50,7 @@ export class GameState {
       this.assetManager
     );
 
-    this.buildTileMode = new BuildTileMode(
+    this.buildTileMode = new BuildItemMode(
       this.scene,
       this.renderPipeline,
       this.assetManager,
@@ -70,12 +70,11 @@ export class GameState {
 
     const cabin = this.assetManager.getModel(ModelAsset.StoneCabin);
     this.assetManager.applyModelTexture(cabin, TextureAsset.Meadow);
-    this.scene.add(cabin);
 
-    const farmer = this.assetManager.getModel(ModelAsset.FarmerMaleOld);
-    this.assetManager.applyModelTexture(farmer, TextureAsset.Farm);
-    farmer.position.set(1, 0, 1);
-    this.scene.add(farmer);
+    const bounds = new THREE.Box3().setFromObject(cabin);
+    const size = bounds.getSize(new THREE.Vector3());
+    console.log("size", size);
+    this.scene.add(cabin);
 
     this.sun = new THREE.DirectionalLight(undefined, Math.PI);
     this.sun.position.copy(new THREE.Vector3(0.75, 1, 0.75).normalize());

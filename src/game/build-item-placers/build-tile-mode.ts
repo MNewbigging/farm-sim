@@ -9,25 +9,25 @@ import { WorldManager } from "../world-manager";
 import { Mode, ModeName } from "../mode-manager";
 import { CropPlacer } from "./crop-tile-placer";
 
-export enum BuildTile {
+export enum BuildItem {
   Path = "Path",
   Fence = "Fence",
   Crop = "Crop",
 }
 
-export interface BuildTilePlacer {
+export interface BuildItemPlacer {
   isTileValid(tile: Tile): boolean;
   onHoverTile?(tile: Tile): void;
   onPlace(tile: Tile): Tile; // passes current tile, expects new replacement tile
   onStop?: () => void;
 }
 
-export class BuildTileMode implements Mode {
+export class BuildItemMode implements Mode {
   name = ModeName.Build;
-  placingBuildItem?: BuildTile;
+  placingBuildItem?: BuildItem;
   enabled = false;
 
-  private currentPlacer?: BuildTilePlacer;
+  private currentPlacer?: BuildItemPlacer;
   private lastTile?: Tile;
 
   constructor(
@@ -51,7 +51,7 @@ export class BuildTileMode implements Mode {
     this.enabled = false;
   }
 
-  toggleBuildItem(item: BuildTile) {
+  toggleBuildItem(item: BuildItem) {
     if (!this.enabled) return;
 
     // Toggle off
@@ -67,13 +67,13 @@ export class BuildTileMode implements Mode {
     this.placingBuildItem = item;
 
     switch (item) {
-      case BuildTile.Path:
+      case BuildItem.Path:
         this.currentPlacer = new PathTilePlacer(
           this.assetManager,
           this.worldManager
         );
         break;
-      case BuildTile.Fence:
+      case BuildItem.Fence:
         this.currentPlacer = new FencePlacer(
           this.scene,
           this.assetManager,
@@ -81,7 +81,7 @@ export class BuildTileMode implements Mode {
           this.outlineLastTile
         );
         break;
-      case BuildTile.Crop:
+      case BuildItem.Crop:
         this.currentPlacer = new CropPlacer(this.worldManager);
     }
 
