@@ -1,6 +1,6 @@
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import { Tile } from "../tiles/tile";
-import { BuildItemPlacer } from "./build-tile-mode";
+import { BuildItemPlacer } from "./build-item-mode";
 
 export class CabinPlacer implements BuildItemPlacer {
   isTileValid(tile: Tile) {

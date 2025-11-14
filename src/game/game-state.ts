@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
 import { AssetManager, ModelAsset, TextureAsset } from "./asset-manager";
-import { BuildItemMode } from "./build-item-placers/build-tile-mode";
+import { BuildItemMode } from "./build-item-placers/build-item-mode";
 import { WorldManager } from "./world-manager";
 import { ModeManager } from "./mode-manager";
 import { DemolishMode } from "./demolish-mode";

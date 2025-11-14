@@ -2,7 +2,7 @@ import { CropTile } from "../tiles/crop-tile/crop-tile";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import { Tile } from "../tiles/tile";
 import { WorldManager } from "../world-manager";
-import { BuildItemPlacer } from "./build-tile-mode";
+import { BuildItemPlacer } from "./build-item-mode";
 
 export class CropPlacer implements BuildItemPlacer {
   constructor(private readonly worldManager: WorldManager) {}

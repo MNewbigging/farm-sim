@@ -1,7 +1,7 @@
 import {
   BuildItem,
   BuildItemMode,
-} from "../../../game/build-item-placers/build-tile-mode";
+} from "../../../game/build-item-placers/build-item-mode";
 import { GameState } from "../../../game/game-state";
 import { useEventUpdater } from "../../hooks/use-event-updater";
 import "./build-menu.scss";
