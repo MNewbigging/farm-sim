@@ -2,6 +2,7 @@ export type GameEvent =
   | "game-loaded"
   | "game-started"
   | "mode-changed"
+  | "hovered-tile"
   | "build-item";
 
 type EventCallback = () => void;

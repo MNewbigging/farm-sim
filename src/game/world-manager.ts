@@ -91,6 +91,7 @@ export class WorldManager {
     this.scene.add(newTile);
   }
 
+  // todo - cast against plane to get nearest tile pos rather than raycast against tile objects
   getIntersectedTile(clientX: number, clientY: number) {
     setNdc(clientX, clientY, this.ndc);
     this.raycaster.setFromCamera(this.ndc, this.camera);

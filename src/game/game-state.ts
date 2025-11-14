@@ -7,6 +7,7 @@ import { WorldManager } from "./world-manager";
 import { ModeManager } from "./mode-manager";
 import { DemolishMode } from "./demolish-mode";
 import { Wheat } from "./crops/wheat";
+import { HoverCursorBehaviour } from "./hover-cursor-behaviour";
 
 export class GameState {
   modeManager: ModeManager;
@@ -21,6 +22,7 @@ export class GameState {
   private controls: OrbitControls;
 
   private worldManager: WorldManager;
+  private hoverCursorBehaviour: HoverCursorBehaviour;
   private sun: THREE.DirectionalLight;
   private sunHelper: THREE.ArrowHelper;
 
@@ -50,6 +52,12 @@ export class GameState {
       this.assetManager
     );
 
+    this.hoverCursorBehaviour = new HoverCursorBehaviour(
+      this.scene,
+      this.renderPipeline,
+      this.worldManager
+    );
+
     this.buildTileMode = new BuildItemMode(
       this.scene,
       this.renderPipeline,
@@ -60,7 +68,8 @@ export class GameState {
     this.demolishMode = new DemolishMode(
       this.renderPipeline,
       this.worldManager,
-      this.assetManager
+      this.assetManager,
+      this.hoverCursorBehaviour
     );
 
     this.modeManager = new ModeManager(this.buildTileMode, this.demolishMode);

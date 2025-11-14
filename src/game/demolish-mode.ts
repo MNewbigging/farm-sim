@@ -1,4 +1,6 @@
+import { eventUpdater } from "../events/event-updater";
 import { AssetManager } from "./asset-manager";
+import { HoverCursorBehaviour } from "./hover-cursor-behaviour";
 import { Mode, ModeName } from "./mode-manager";
 import { RenderPipeline } from "./render-pipeline";
 import { FenceTile } from "./tiles/fence-tile/fence-tile";
@@ -11,20 +13,19 @@ export class DemolishMode implements Mode {
   name = ModeName.Demolish;
   enabled = false;
 
-  private lastTile?: Tile;
-
   constructor(
     private renderPipeline: RenderPipeline,
     private worldManager: WorldManager,
-    private assetManager: AssetManager
+    private assetManager: AssetManager,
+    private hoverCursorBehaviour: HoverCursorBehaviour
   ) {}
 
   enable(): void {
     if (this.enabled) return;
 
-    // Change cursor
-    this.renderPipeline.canvas.addEventListener("mousemove", this.onMouseMove);
+    this.hoverCursorBehaviour.enable();
     this.renderPipeline.canvas.addEventListener("click", this.onClick);
+    eventUpdater.on("hovered-tile", this.onHoverTile);
 
     this.enabled = true;
   }
@@ -32,38 +33,26 @@ export class DemolishMode implements Mode {
   disable(): void {
     if (!this.enabled) return;
 
-    this.renderPipeline.canvas.removeEventListener(
-      "mousemove",
-      this.onMouseMove
-    );
+    this.hoverCursorBehaviour.disable();
     this.renderPipeline.canvas.removeEventListener("click", this.onClick);
-
-    this.renderPipeline.clearOutlines();
+    eventUpdater.off("hovered-tile", this.onHoverTile);
 
     this.enabled = false;
   }
 
-  private onMouseMove = (event: MouseEvent) => {
-    const hitTile = this.worldManager.getIntersectedTile(event);
-    if (!hitTile) return;
+  private onHoverTile = () => {
+    // Get the newly hovered tile
+    const hoveredTile = this.hoverCursorBehaviour.lastHoveredTile;
+    console.log("didnt find tile");
+    if (!hoveredTile) return;
 
-    this.lastTile = hitTile;
-
-    this.outlineLastTile();
+    if (this.canBeDemolished(hoveredTile)) {
+      this.hoverCursorBehaviour.cursor.setColour("orange");
+      console.log("can be demolished");
+    } else {
+      this.hoverCursorBehaviour.cursor.setColour("red");
+    }
   };
-
-  private outlineLastTile() {
-    if (!this.lastTile) return;
-
-    this.renderPipeline.clearOutlines();
-
-    // Colour depending on if it can be demolished
-    this.renderPipeline.changeOutlineColour(
-      this.canBeDemolished(this.lastTile) ? "white" : "red"
-    );
-
-    this.renderPipeline.outlineObject(this.lastTile);
-  }
 
   private canBeDemolished(tile: Tile) {
     if (tile instanceof FenceTile) return true;
@@ -73,10 +62,15 @@ export class DemolishMode implements Mode {
   }
 
   private onClick = () => {
-    if (!this.lastTile) return;
-    if (!this.canBeDemolished(this.lastTile)) return;
+    const hoveredTile = this.hoverCursorBehaviour.lastHoveredTile;
+    if (!hoveredTile) {
+      console.log("no hovered tile");
+      return;
+    }
 
-    this.demolishTile(this.lastTile);
+    if (this.canBeDemolished(hoveredTile)) {
+      this.demolishTile(hoveredTile);
+    }
   };
 
   private demolishTile(tile: Tile) {

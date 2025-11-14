@@ -14,8 +14,6 @@ export class CropTile extends Tile {
     const aridness =
       cnoise(new THREE.Vector2(rowIndex * scale, colIndex * scale)) * 0.5 + 0.5; // [0:1] range
 
-    console.log(aridness);
-
     const color = new THREE.Color(0.03, 0.015, 0.0).lerp(
       new THREE.Color(0.05, 0.03, 0),
       aridness
