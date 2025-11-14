@@ -16,12 +16,10 @@ export class CropPlacer implements BuildItemPlacer {
     return tile instanceof GrassWithLeavesTile;
   }
 
-  onPlace(tile: Tile): Tile {
+  onPlace(tile: Tile) {
     const cropTile = new CropTile(tile.rowIndex, tile.colIndex);
 
     this.worldManager.replaceTile(cropTile);
-
-    return cropTile;
   }
 
   onStop?: (() => void) | undefined;

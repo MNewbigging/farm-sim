@@ -55,7 +55,6 @@ export class FencePlacer implements BuildItemPlacer {
     // If the tile is already a fence tile, place additional fence
     if (tile instanceof FenceTile) {
       tile.addFenceAtEdge(this.fenceEdge);
-      return tile;
     }
 
     // Otherwise replace the current tile with a fence tile
@@ -66,7 +65,6 @@ export class FencePlacer implements BuildItemPlacer {
       this.fenceEdge
     );
     this.worldManager.replaceTile(fenceTile);
-    return fenceTile;
   }
 
   private onRotate = () => {

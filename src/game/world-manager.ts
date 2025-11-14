@@ -91,8 +91,8 @@ export class WorldManager {
     this.scene.add(newTile);
   }
 
-  getIntersectedTile(event: MouseEvent) {
-    setNdc(event, this.ndc);
+  getIntersectedTile(clientX: number, clientY: number) {
+    setNdc(clientX, clientY, this.ndc);
     this.raycaster.setFromCamera(this.ndc, this.camera);
 
     for (const row of this.groundTiles) {

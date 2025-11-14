@@ -20,7 +20,7 @@ export interface BuildItemPlacer {
   adjustCursor: (cursor: BuildCursor) => void;
   isTileValid(tile: Tile): boolean;
   onHoverTile?(tile: Tile): void;
-  onPlace(tile: Tile): Tile; // passes current tile, expects new replacement tile
+  onPlace(tile: Tile): void;
   onStop?: () => void;
 }
 
@@ -40,6 +40,8 @@ export class BuildItemMode implements Mode {
     private worldManager: WorldManager
   ) {
     this.buildCursor = new BuildCursor();
+    this.buildCursor.visible = false;
+    this.scene.add(this.buildCursor);
   }
 
   // Called when build menu is opened
@@ -95,7 +97,6 @@ export class BuildItemMode implements Mode {
 
     // Adjust cursor to match item
     this.currentPlacer?.adjustCursor(this.buildCursor);
-    this.scene.add(this.buildCursor);
 
     // Events
     document.body.style.cursor = "pointer";
@@ -107,7 +108,6 @@ export class BuildItemMode implements Mode {
   private stopPlacingBuildItem() {
     if (!this.placingBuildItem) return;
 
-    this.scene.remove(this.buildCursor);
     this.currentPlacer?.onStop?.();
     this.placingBuildItem = undefined;
     this.currentPlacer = undefined;
@@ -124,29 +124,38 @@ export class BuildItemMode implements Mode {
   private onMouseMove = (event: MouseEvent) => {
     if (!this.currentPlacer) return;
 
-    const hitTile = this.worldManager.getIntersectedTile(event);
-    if (!hitTile) return;
-
-    this.hoveredTile = hitTile;
+    this.setHoveredTile(event.clientX, event.clientY);
+    if (!this.hoveredTile) {
+      this.buildCursor.visible = false;
+      return;
+    }
+    this.buildCursor.visible = true;
 
     // Center cursor on the hovered tile
-    this.buildCursor.position.copy(hitTile.position);
+    this.buildCursor.position.copy(this.hoveredTile.position);
     this.buildCursor.position.y += 0.01; // do this elsewhere?
 
     // Colour according to validity
     this.setCursorValidity();
 
     // Optional hover logic
-    this.currentPlacer?.onHoverTile?.(hitTile);
+    this.currentPlacer?.onHoverTile?.(this.hoveredTile);
   };
 
-  private onMouseClick = () => {
+  private setHoveredTile(clientX: number, clientY: number) {
+    // todo raycast against plane rather than tiles, then snap to nearest tile position
+    const hitTile = this.worldManager.getIntersectedTile(clientX, clientY);
+
+    this.hoveredTile = hitTile;
+  }
+
+  private onMouseClick = (event: MouseEvent) => {
     if (!this.hoveredTile) return; // uses tile set on mouse move
     if (!this.currentPlacer) return;
 
     if (this.currentPlacer.isTileValid(this.hoveredTile)) {
-      const newTile = this.currentPlacer.onPlace(this.hoveredTile);
-      this.hoveredTile = newTile;
+      this.currentPlacer.onPlace(this.hoveredTile);
+      this.setHoveredTile(event.clientX, event.clientY);
       this.setCursorValidity();
     }
   };

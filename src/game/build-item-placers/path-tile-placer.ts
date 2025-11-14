@@ -5,7 +5,6 @@ import { BuildItemPlacer } from "./build-item-mode";
 import { WorldManager } from "../world-manager";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import { FenceTile } from "../tiles/fence-tile/fence-tile";
-import { CropTile } from "../tiles/crop-tile/crop-tile";
 import { BuildCursor } from "./build-cursor";
 
 export class PathTilePlacer implements BuildItemPlacer {
@@ -32,8 +31,6 @@ export class PathTilePlacer implements BuildItemPlacer {
     this.worldManager.replaceTile(path);
 
     this.updatePathConnections(path);
-
-    return path;
   }
 
   private updatePathConnections(pathTile: PathTile) {

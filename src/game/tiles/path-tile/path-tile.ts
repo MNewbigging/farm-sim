@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Tile, TileNeighbours } from "../tile";
+import { Tile } from "../tile";
 import pathTileVS from "./path-tile.vs";
 import pathTileFS from "./path-tile.fs";
 import { AssetManager, TextureAsset } from "../../asset-manager";
