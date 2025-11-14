@@ -72,6 +72,11 @@ export class GameState {
     this.assetManager.applyModelTexture(cabin, TextureAsset.Meadow);
     this.scene.add(cabin);
 
+    const farmer = this.assetManager.getModel(ModelAsset.FarmerMaleOld);
+    this.assetManager.applyModelTexture(farmer, TextureAsset.Farm);
+    farmer.position.set(1, 0, 1);
+    this.scene.add(farmer);
+
     this.sun = new THREE.DirectionalLight(undefined, Math.PI);
     this.sun.position.copy(new THREE.Vector3(0.75, 1, 0.75).normalize());
     this.scene.add(this.sun);

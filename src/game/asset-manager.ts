@@ -9,15 +9,14 @@ export enum AnimationAsset {
 }
 
 export enum ModelAsset {
-  BANDIT = "bandit.fbx",
-  BOX_SMALL = "box-small.glb",
   FenceWood = "SM_Prop_Fence_Wood_02.fbx",
   FenceWoodPole = "SM_Prop_Fence_Wood_Pole_01.fbx",
   StoneCabin = "SM_Bld_Stone_Cabin_01.fbx",
+  FarmerMale = "SK_Chr_Farmer_Male_01.fbx",
+  FarmerMaleOld = "SK_Chr_Farmer_Male_Old_01.fbx",
 }
 
 export enum TextureAsset {
-  BANDIT = "bandit-texture.png",
   HDR = "orchard_cartoony.hdr",
   GrassDiffuse = "grass/Grass_Texture_01.png",
   GrassNormal = "grass/Ground_Normals_01.png",
@@ -49,6 +48,7 @@ export class AssetManager {
     model.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.material.map = texture;
+        child.material.vertexColors = false;
       }
     });
   }
@@ -79,6 +79,18 @@ export class AssetManager {
   }
 
   private loadModels() {
+    // General scaling:
+    [
+      ModelAsset.StoneCabin,
+      ModelAsset.FarmerMale,
+      ModelAsset.FarmerMaleOld,
+    ].forEach((asset) =>
+      this.loadModel(asset, (group: THREE.Group) => {
+        group.scale.multiplyScalar(0.01);
+      })
+    );
+
+    // Specific scaling:
     this.loadModel(ModelAsset.FenceWood, (fence: THREE.Group) => {
       fence.scale.set(0.004, 0.005, 0.005);
       fence.translateX(-0.5);
@@ -87,18 +99,9 @@ export class AssetManager {
     this.loadModel(ModelAsset.FenceWoodPole, (pole: THREE.Group) => {
       pole.scale.set(0.005, 0.005, 0.005);
     });
-
-    this.loadModel(ModelAsset.StoneCabin, (cabin: THREE.Group) => {
-      cabin.scale.multiplyScalar(0.01);
-    });
   }
 
   private loadTextures() {
-    this.loadTexture(
-      TextureAsset.BANDIT,
-      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
-    );
-
     this.loadTexture(
       TextureAsset.HDR,
       (texture) => (texture.mapping = THREE.EquirectangularReflectionMapping)
@@ -142,9 +145,9 @@ export class AssetManager {
   }
 
   private loadAnimations() {
-    Object.values(AnimationAsset).forEach((filename) =>
-      this.loadAnimation(filename)
-    );
+    // Object.values(AnimationAsset).forEach((filename) =>
+    //   this.loadAnimation(filename)
+    // );
   }
 
   private loadModel(
