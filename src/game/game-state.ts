@@ -74,7 +74,6 @@ export class GameState {
     const bounds = new THREE.Box3().setFromObject(cabin);
     const size = bounds.getSize(new THREE.Vector3());
     console.log("size", size);
-    this.scene.add(cabin);
 
     this.sun = new THREE.DirectionalLight(undefined, Math.PI);
     this.sun.position.copy(new THREE.Vector3(0.75, 1, 0.75).normalize());

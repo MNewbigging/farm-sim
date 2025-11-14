@@ -6,6 +6,7 @@ import { BuildItemPlacer } from "./build-item-mode";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import { FenceTile, makeFenceProp } from "../tiles/fence-tile/fence-tile";
 import { WorldManager } from "../world-manager";
+import { BuildCursor } from "./build-cursor";
 
 export class FencePlacer implements BuildItemPlacer {
   private displayFence: THREE.Group;
@@ -22,6 +23,10 @@ export class FencePlacer implements BuildItemPlacer {
     this.scene.add(this.displayFence);
 
     keyboardListener.on("r", this.onRotate);
+  }
+
+  adjustCursor(cursor: BuildCursor) {
+    cursor.scale.set(1, 1, 1);
   }
 
   onStop() {

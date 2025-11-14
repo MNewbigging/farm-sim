@@ -8,6 +8,7 @@ import { PathTilePlacer } from "./path-tile-placer";
 import { WorldManager } from "../world-manager";
 import { Mode, ModeName } from "../mode-manager";
 import { CropPlacer } from "./crop-tile-placer";
+import { BuildCursor } from "./build-cursor";
 
 export enum BuildItem {
   Path = "Path",
@@ -16,6 +17,7 @@ export enum BuildItem {
 }
 
 export interface BuildItemPlacer {
+  adjustCursor: (cursor: BuildCursor) => void;
   isTileValid(tile: Tile): boolean;
   onHoverTile?(tile: Tile): void;
   onPlace(tile: Tile): Tile; // passes current tile, expects new replacement tile
@@ -28,15 +30,19 @@ export class BuildItemMode implements Mode {
   enabled = false;
 
   private currentPlacer?: BuildItemPlacer;
-  private lastTile?: Tile;
+  private buildCursor: BuildCursor;
+  private hoveredTile?: Tile;
 
   constructor(
     private scene: THREE.Scene,
     private renderPipeline: RenderPipeline,
     private assetManager: AssetManager,
     private worldManager: WorldManager
-  ) {}
+  ) {
+    this.buildCursor = new BuildCursor();
+  }
 
+  // Called when build menu is opened
   enable() {
     if (this.enabled) return;
 
@@ -51,6 +57,7 @@ export class BuildItemMode implements Mode {
     this.enabled = false;
   }
 
+  // Called when selecting a build item option
   toggleBuildItem(item: BuildItem) {
     if (!this.enabled) return;
 
@@ -63,9 +70,10 @@ export class BuildItemMode implements Mode {
       this.stopPlacingBuildItem();
     }
 
-    // Start placing new item
+    // Now placing this item
     this.placingBuildItem = item;
 
+    // Get correct placer
     switch (item) {
       case BuildItem.Path:
         this.currentPlacer = new PathTilePlacer(
@@ -78,18 +86,18 @@ export class BuildItemMode implements Mode {
           this.scene,
           this.assetManager,
           this.worldManager,
-          this.outlineLastTile
+          this.setCursorValidity
         );
         break;
       case BuildItem.Crop:
         this.currentPlacer = new CropPlacer(this.worldManager);
     }
 
-    if (!this.currentPlacer) {
-      this.stopPlacingBuildItem();
-      return;
-    }
+    // Adjust cursor to match item
+    this.currentPlacer?.adjustCursor(this.buildCursor);
+    this.scene.add(this.buildCursor);
 
+    // Events
     document.body.style.cursor = "pointer";
     this.renderPipeline.canvas.addEventListener("mousemove", this.onMouseMove);
     this.renderPipeline.canvas.addEventListener("click", this.onMouseClick);
@@ -99,6 +107,7 @@ export class BuildItemMode implements Mode {
   private stopPlacingBuildItem() {
     if (!this.placingBuildItem) return;
 
+    this.scene.remove(this.buildCursor);
     this.currentPlacer?.onStop?.();
     this.placingBuildItem = undefined;
     this.currentPlacer = undefined;
@@ -118,39 +127,35 @@ export class BuildItemMode implements Mode {
     const hitTile = this.worldManager.getIntersectedTile(event);
     if (!hitTile) return;
 
-    this.lastTile = hitTile;
+    this.hoveredTile = hitTile;
 
-    this.outlineLastTile();
+    // Center cursor on the hovered tile
+    this.buildCursor.position.copy(hitTile.position);
+    this.buildCursor.position.y += 0.01; // do this elsewhere?
+
+    // Colour according to validity
+    this.setCursorValidity();
 
     // Optional hover logic
     this.currentPlacer?.onHoverTile?.(hitTile);
   };
 
   private onMouseClick = () => {
-    if (!this.lastTile) return; // uses tile set on mouse move
+    if (!this.hoveredTile) return; // uses tile set on mouse move
     if (!this.currentPlacer) return;
 
-    if (this.currentPlacer.isTileValid(this.lastTile)) {
-      const newTile = this.currentPlacer.onPlace(this.lastTile);
-      this.lastTile = newTile;
-      this.outlineLastTile();
+    if (this.currentPlacer.isTileValid(this.hoveredTile)) {
+      const newTile = this.currentPlacer.onPlace(this.hoveredTile);
+      this.hoveredTile = newTile;
+      this.setCursorValidity();
     }
   };
 
-  private outlineLastTile = () => {
-    if (!this.lastTile) return;
-    if (!this.currentPlacer) return;
+  private setCursorValidity = () => {
+    if (!this.hoveredTile) return;
 
-    this.renderPipeline.clearOutlines();
+    const valid = this.currentPlacer?.isTileValid(this.hoveredTile);
 
-    // Ensure outline colour is set
-    if (!this.currentPlacer.isTileValid(this.lastTile)) {
-      this.renderPipeline.changeOutlineColour("red");
-    } else {
-      this.renderPipeline.changeOutlineColour("white");
-    }
-
-    // Outline
-    this.renderPipeline.outlineObject(this.lastTile);
+    this.buildCursor.setColour(valid ? "white" : "red");
   };
 }

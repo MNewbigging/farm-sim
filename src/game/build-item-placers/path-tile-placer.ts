@@ -6,12 +6,17 @@ import { WorldManager } from "../world-manager";
 import { GrassWithLeavesTile } from "../tiles/grass-tile/grass-tile";
 import { FenceTile } from "../tiles/fence-tile/fence-tile";
 import { CropTile } from "../tiles/crop-tile/crop-tile";
+import { BuildCursor } from "./build-cursor";
 
 export class PathTilePlacer implements BuildItemPlacer {
   constructor(
     private assetManager: AssetManager,
     private worldManager: WorldManager
   ) {}
+
+  adjustCursor(cursor: BuildCursor) {
+    cursor.scale.set(1, 1, 1);
+  }
 
   isTileValid(tile: Tile) {
     // Fences extend grass tiles so check for that first
